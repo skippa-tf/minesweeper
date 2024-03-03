@@ -56,6 +56,9 @@ public class Main extends Application {
             {false, false, false, true,  false},
             {false, false, false, false, false}
     };
+    /* Only works with a 5x5 for now as makeTile() uses the testGrid which is 5x5 */
+    private int numRows = 5;
+    private int numCols = 5;
 
     /* These controls get injected from the ui.fxml file */
     @FXML
@@ -75,14 +78,34 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
 
+        /* Setup the smileBTN */
+        setupSmileBTN();
+        setupMinefield();
 
+    }
+
+    /* This method sets up the smileBTN with the appropriate behaviour */
+    private void setupSmileBTN(){
         smileBTN.setGraphic(new ImageView(faceSmile));
         smileBTN.setPadding(Insets.EMPTY);
+        smileBTN.setOnMouseClicked((mouseEvent -> {
+            System.out.println(mouseEvent.getSource().toString());
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                System.out.println("LEFT");
+                setupSmileBTN();
+                setupMinefield();
+            }
+        }));
+    }
 
+    /* This method is responsible for setting up the minefield and its grid pane; */
+    private void setupMinefield(){
+        minefieldGPane.getChildren().clear();
+        Tile.reset();
         /* Set up the grid of tiles and add them to the GridPane */
-        Tile[][] grid = new Tile[5][5];
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 5; col++) {
+        Tile[][] grid = new Tile[numRows][numCols];
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < numCols; col++) {
                 Tile tile = makeTile(col, row, grid);
                 minefieldGPane.add(tile, col, row);
                 grid[row][col] = tile;
@@ -92,10 +115,9 @@ public class Main extends Application {
         for (Tile[] tRow : grid)
             for (Tile t : tRow)
                 t.setVal(grid);
-
     }
 
-    /* This is a helper method for creating tiles in the gridpane */
+    /* This is a helper method for creating tiles in the grid pane. It returns a new tile. */
     private Tile makeTile(int col, int row, Tile[][] grid) {
         Tile tile = new Tile(col, row, testGrid[row][col], grid);
         tile.setMaxHeight(32);
@@ -205,11 +227,18 @@ class Tile extends Button{
         this.val = sum;
     }
 
+    /* This method "reveals" the tile and sets the image to the correct value */
     public void reveal(Image[] imgArr){
         revealedTileCount++;
         //System.out.println("Revealed Tile Count: " + revealedTileCount);
         isRevealed = true;
         this.setGraphic(new ImageView(imgArr[this.getVal()]));
+    }
+
+    public static void reset() {
+        bombCount = 0;
+        tileCount = 0;
+        revealedTileCount = 0;
     }
 
 
