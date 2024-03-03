@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="20a4a599-c1d0-4523-b3ba-08a67fbfa9bc" name="Changes" comment="Init commit">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ca/jasoncodes/minesweeper/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/ca/jasoncodes/minesweeper/ui.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/bombrevealed-bicubic.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/cover.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/face-dead.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/face-smile.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/face-win.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/flag.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/mine-grey.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/mine-misflagged.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/mine-red.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/t0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/t1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/t2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/t3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/t4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/t5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/t6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/t7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/t8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/images/t9.png" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="Use Maven wrapper" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2cNMOgC71LmDDoRwCBYbkSydgoE" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.HelloApplication.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "G:/kitchensync/school/semester_two/cosc121 - computer programming II/Lab6/Minesweeper",
+    "settings.editor.selected.configurable": "MavenSettings"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-19.0.2-corretto-19.0.2-4caba194b151-48ba4555" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="20a4a599-c1d0-4523-b3ba-08a67fbfa9bc" name="Changes" comment="" />
+      <created>1707947556645</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1707947556645</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Init commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Init commit" />
+  </component>
+</project>
