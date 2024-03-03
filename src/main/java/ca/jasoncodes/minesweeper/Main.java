@@ -108,8 +108,13 @@ public class Main extends Application {
                 if (tile.hasMine()) {
                     tile.setGraphic(new ImageView(mineRed));
                     smileBTN.setGraphic(new ImageView(faceDead));
-                } else {
-                    tile.setGraphic(new ImageView(valImageArray[tile.getVal()]));
+                } else if (!tile.isRevealed()){
+                    tile.reveal(valImageArray);
+                    int bombCount = Tile.getBombCount();
+                    int tileCount = Tile.getTileCount();
+                    int revealedTileCount = Tile.getRevealedTileCount();
+                    if (tileCount - bombCount == revealedTileCount)
+                        smileBTN.setGraphic(new ImageView(faceWin));
                 }
 
             }
@@ -125,22 +130,33 @@ public class Main extends Application {
 
 /* Mostly adopted from lecture code */
 class Tile extends Button{
-    private int col;
-    private int row;
+    private static int tileCount;
+    private static int revealedTileCount;
+    private static int bombCount;
+    private final int col;
+    private final int row;
     private int val;
-    private boolean hasMine;
+    private final boolean hasMine;
+    private boolean isRevealed;
 
-    public int getCol() { return col;}
-    public int getRow() { return row;}
+    public int getCol() { return col; }
+    public int getRow() { return row; }
     public int getVal() { return val; }
+    public boolean isRevealed() { return isRevealed; }
     public boolean hasMine() { return hasMine; }
+    public static int getTileCount() { return tileCount; }
+    public static int getRevealedTileCount() { return revealedTileCount; }
+    public static int getBombCount() { return bombCount; }
 
     public Tile(int col, int row, boolean hasMine, Tile[][] grid) {
         this.col = col;
         this.row = row;
         this.hasMine = hasMine;
-
+        if (hasMine)
+            bombCount++;
+        tileCount++;
         setPadding(Insets.EMPTY);
+        //System.out.println("Tile count: " + tileCount + "\nBomb count: " + bombCount);
     }
 
     /* This method instantiates the val to the number of bombs around the tile */
@@ -187,6 +203,13 @@ class Tile extends Button{
             sum++;
 
         this.val = sum;
+    }
+
+    public void reveal(Image[] imgArr){
+        revealedTileCount++;
+        //System.out.println("Revealed Tile Count: " + revealedTileCount);
+        isRevealed = true;
+        this.setGraphic(new ImageView(imgArr[this.getVal()]));
     }
 
 
