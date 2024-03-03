@@ -1,11 +1,14 @@
 package ca.jasoncodes.minesweeper;
 
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
@@ -13,9 +16,6 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Main extends Application {
-    private HBox smileHBox;
-    private Button smileBTN;
-
     /* Load all our images */
     private final Image t0 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t0.png")));
     private final Image t1 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t1.png")));
@@ -46,6 +46,23 @@ public class Main extends Application {
     private final Image mineMisflagged = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mine-misflagged.png")));
     private final Image mineRed = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mine-red.png")));
 
+    /* Init the testing grid */
+    private final boolean[][] testGrid = {
+            {false, false, false, false, false},
+            {false, true,  false, false, false},
+            {false, false, false, true,  false},
+            {false, false, false, true,  false},
+            {false, false, false, false, false}
+    };
+
+    /* These controls get injected from the ui.fxml file */
+    @FXML
+    private HBox smileHBox;
+    @FXML
+    private GridPane minefieldGPane;
+
+    private Button smileBTN;
+
     @Override
     public void start(Stage stage) throws IOException {
         /* Load the fxml file that builds the ui */
@@ -56,13 +73,39 @@ public class Main extends Application {
         stage.show();
 
         smileBTN = new Button();
-        smileBTN.setGraphic(new ImageView(t0));
+        smileBTN.setGraphic(new ImageView(faceSmile));
         smileHBox = new HBox();
         smileHBox.getChildren().add(smileBTN);
 
+
+        for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 5; col++) {
+
+            }
+        }
     }
 
     public static void main(String[] args) {
         launch();
+    }
+}
+
+/* Mostly adopted from lecture code */
+class Tile extends Button{
+    private int x;
+    private int y;
+    private boolean hasMine;
+
+    public Tile(int x, int y) {
+        this.x = x;
+        this.y = y;
+        setPadding(Insets.EMPTY);
+    }
+
+    public int getX() { return x;}
+    public int getY() { return y;}
+
+    public String toString() {
+        return "(" + x + ", " + y + "): " + super.toString();
     }
 }
