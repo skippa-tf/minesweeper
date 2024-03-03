@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -36,6 +37,7 @@ public class Main extends Application {
     private final Image six = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/6.png")));
     private final Image seven = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/7.png")));
     private final Image eight = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/8.png")));
+    private final Image[] valImageArray = new Image[] {zero, one, two, three, four, five, six, seven, eight};
     private final Image bombRevealedBicubic = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/bombrevealed-bicubic.png")));
     private final Image cover = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/cover.png")));
     private final Image faceDead = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/face-dead.png")));
@@ -60,30 +62,61 @@ public class Main extends Application {
     private HBox smileHBox;
     @FXML
     private GridPane minefieldGPane;
-
+    @FXML
     private Button smileBTN;
 
     @Override
     public void start(Stage stage) throws IOException {
         /* Load the fxml file that builds the ui */
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ui.fxml"));
+        fxmlLoader.setController(this);
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Minesweeper");
         stage.setScene(scene);
         stage.show();
 
-        smileBTN = new Button();
+
         smileBTN.setGraphic(new ImageView(faceSmile));
-        smileHBox = new HBox();
-        smileHBox.getChildren().add(smileBTN);
+        smileBTN.setPadding(Insets.EMPTY);
 
-
+        /* Set up the grid of tiles and add them to the GridPane */
+        Tile[][] grid = new Tile[5][5];
         for (int row = 0; row < 5; row++) {
             for (int col = 0; col < 5; col++) {
-
+                Tile tile = makeTile(col, row, grid);
+                minefieldGPane.add(tile, col, row);
+                grid[row][col] = tile;
             }
         }
+        /* Once the grid is instantiated, set the vals for each tile */
+        for (Tile[] tRow : grid)
+            for (Tile t : tRow)
+                t.setVal(grid);
+
     }
+
+    /* This is a helper method for creating tiles in the gridpane */
+    private Tile makeTile(int col, int row, Tile[][] grid) {
+        Tile tile = new Tile(col, row, testGrid[row][col], grid);
+        tile.setMaxHeight(32);
+        tile.setMaxWidth(32);
+        tile.setGraphic(new ImageView(cover));
+        tile.setOnMouseClicked((e) ->{
+            System.out.println(e.getSource().toString());
+            if (e.getButton() == MouseButton.PRIMARY) {
+                System.out.println("LEFT");
+                if (tile.hasMine()) {
+                    tile.setGraphic(new ImageView(mineRed));
+                    smileBTN.setGraphic(new ImageView(faceDead));
+                } else {
+                    tile.setGraphic(new ImageView(valImageArray[tile.getVal()]));
+                }
+
+            }
+        });
+        return tile;
+    }
+
 
     public static void main(String[] args) {
         launch();
@@ -92,20 +125,74 @@ public class Main extends Application {
 
 /* Mostly adopted from lecture code */
 class Tile extends Button{
-    private int x;
-    private int y;
+    private int col;
+    private int row;
+    private int val;
     private boolean hasMine;
 
-    public Tile(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public int getCol() { return col;}
+    public int getRow() { return row;}
+    public int getVal() { return val; }
+    public boolean hasMine() { return hasMine; }
+
+    public Tile(int col, int row, boolean hasMine, Tile[][] grid) {
+        this.col = col;
+        this.row = row;
+        this.hasMine = hasMine;
+
         setPadding(Insets.EMPTY);
     }
 
-    public int getX() { return x;}
-    public int getY() { return y;}
+    /* This method instantiates the val to the number of bombs around the tile */
+    /**
+    private void setVal(int col, int row, Tile[][] grid) {
+        if (col <= 0 || col >= grid[0].length - 1)
+            return;
+        if (row <= 0 || row >= grid.length - 1)
+            return;
+
+        if (!grid[col-1][row-1].hasMine()) {
+
+        }
+     **/
+    public void setVal(Tile[][] grid) {
+        int row = this.getRow();
+        int col = this.getCol();
+        int sum = 0;
+        int numRows = grid.length;
+        int numCols = grid[0].length;
+        // Top left
+        if (col > 0 && row > 0 && grid[row-1][col-1].hasMine())
+            sum++;
+        // Top middle
+        if (row > 0 && grid[row-1][col].hasMine())
+            sum++;
+        // Top right
+        if (col < numCols - 1 && row > 0 && grid[row-1][col+1].hasMine())
+            sum++;
+        // Right
+        if (col < numCols - 1 && grid[row][col+1].hasMine())
+            sum++;
+        // Bottom right
+        if (col < numCols - 1 && row < numRows - 1 && grid[row+1][col+1].hasMine())
+            sum++;
+        // Bottom middle
+        if (row < numRows - 1 && grid[row+1][col].hasMine())
+            sum++;
+        // Bottom left
+        if (col > 0 && row < numRows - 1 && grid[row+1][col-1].hasMine())
+            sum++;
+        // Left
+        if (col > 0 && grid[row][col-1].hasMine())
+            sum++;
+
+        this.val = sum;
+    }
+
+
+
 
     public String toString() {
-        return "(" + x + ", " + y + "): " + super.toString();
+        return "(" + getCol() + ", " + getRow() + "): " + super.toString();
     }
 }
