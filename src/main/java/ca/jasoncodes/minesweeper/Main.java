@@ -56,6 +56,7 @@ public class Main extends Application {
             {false, false, false, true,  false},
             {false, false, false, false, false}
     };
+
     /* Only works with a 5x5 for now as makeTile() uses the testGrid which is 5x5 */
     private int numRows = 5;
     private int numCols = 5;
@@ -113,11 +114,12 @@ public class Main extends Application {
         }
         /* Once the grid is instantiated, set the vals for each tile */
         for (Tile[] tRow : grid)
-            for (Tile t : tRow)
+            for (Tile t : tRow) {
                 t.setVal(grid);
+            }
     }
 
-    /* This is a helper method for creating tiles in the grid pane. It returns a new tile. */
+    /* This is a helper method for creating tiles to be added to the grid pane */
     private Tile makeTile(int col, int row, Tile[][] grid) {
         Tile tile = new Tile(col, row, testGrid[row][col], grid);
         tile.setMaxHeight(32);
@@ -150,6 +152,7 @@ public class Main extends Application {
     }
 }
 
+
 /* Mostly adopted from lecture code */
 class Tile extends Button{
     private static int tileCount;
@@ -170,6 +173,7 @@ class Tile extends Button{
     public static int getRevealedTileCount() { return revealedTileCount; }
     public static int getBombCount() { return bombCount; }
 
+
     public Tile(int col, int row, boolean hasMine, Tile[][] grid) {
         this.col = col;
         this.row = row;
@@ -181,51 +185,35 @@ class Tile extends Button{
         //System.out.println("Tile count: " + tileCount + "\nBomb count: " + bombCount);
     }
 
-    /* This method instantiates the val to the number of bombs around the tile */
-    /**
-    private void setVal(int col, int row, Tile[][] grid) {
-        if (col <= 0 || col >= grid[0].length - 1)
-            return;
-        if (row <= 0 || row >= grid.length - 1)
-            return;
 
-        if (!grid[col-1][row-1].hasMine()) {
-
-        }
-     **/
+    /* This method checks the tiles around this tile and sets its value to the bomb count */
     public void setVal(Tile[][] grid) {
         int row = this.getRow();
         int col = this.getCol();
         int sum = 0;
         int numRows = grid.length;
         int numCols = grid[0].length;
+        /* Check the tiles around the current tile for bombs and sum the bomb count */
         // Top left
-        if (col > 0 && row > 0 && grid[row-1][col-1].hasMine())
-            sum++;
+        if (col > 0 && row > 0 && grid[row-1][col-1].hasMine()) { sum++; }
         // Top middle
-        if (row > 0 && grid[row-1][col].hasMine())
-            sum++;
+        if (row > 0 && grid[row-1][col].hasMine()) { sum++; }
         // Top right
-        if (col < numCols - 1 && row > 0 && grid[row-1][col+1].hasMine())
-            sum++;
+        if (col < numCols - 1 && row > 0 && grid[row-1][col+1].hasMine()) { sum++; }
         // Right
-        if (col < numCols - 1 && grid[row][col+1].hasMine())
-            sum++;
+        if (col < numCols - 1 && grid[row][col+1].hasMine()) { sum++; }
         // Bottom right
-        if (col < numCols - 1 && row < numRows - 1 && grid[row+1][col+1].hasMine())
-            sum++;
+        if (col < numCols - 1 && row < numRows - 1 && grid[row+1][col+1].hasMine()) { sum++; }
         // Bottom middle
-        if (row < numRows - 1 && grid[row+1][col].hasMine())
-            sum++;
+        if (row < numRows - 1 && grid[row+1][col].hasMine()) { sum++; }
         // Bottom left
-        if (col > 0 && row < numRows - 1 && grid[row+1][col-1].hasMine())
-            sum++;
+        if (col > 0 && row < numRows - 1 && grid[row+1][col-1].hasMine()) { sum++; }
         // Left
-        if (col > 0 && grid[row][col-1].hasMine())
-            sum++;
+        if (col > 0 && grid[row][col-1].hasMine()) { sum++; }
 
         this.val = sum;
     }
+
 
     /* This method "reveals" the tile and sets the image to the correct value */
     public void reveal(Image[] imgArr){
@@ -235,14 +223,12 @@ class Tile extends Button{
         this.setGraphic(new ImageView(imgArr[this.getVal()]));
     }
 
+
     public static void reset() {
         bombCount = 0;
         tileCount = 0;
         revealedTileCount = 0;
     }
-
-
-
 
     public String toString() {
         return "(" + getCol() + ", " + getRow() + "): " + super.toString();
