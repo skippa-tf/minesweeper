@@ -1,3 +1,4 @@
+
 package ca.jasoncodes.minesweeper;
 
 import javafx.application.Application;
@@ -18,7 +19,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Main extends Application {
-    /* Load all our images */
+    /* Load all our images */    /* Intellij suggested to add Objects.requiredNonNull because getting the resource might be null */
     private final Image t0 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t0.png")));
     private final Image t1 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t1.png")));
     private final Image t2 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t2.png")));
@@ -38,7 +39,9 @@ public class Main extends Application {
     private final Image six = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/6.png")));
     private final Image seven = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/7.png")));
     private final Image eight = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/8.png")));
+    /* This array is used to make image grabbing easy with an index */
     private final Image[] valImageArray = new Image[] {zero, one, two, three, four, five, six, seven, eight};
+
     private final Image bombRevealedBicubic = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/bombrevealed-bicubic.png")));
     private final Image cover = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/cover.png")));
     private final Image faceDead = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/face-dead.png")));
@@ -78,6 +81,8 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ui.fxml"));
         fxmlLoader.setController(this);
         Scene scene = new Scene(fxmlLoader.load());
+        stage.setWidth(200);
+        stage.setHeight(350);
         stage.setTitle("Minesweeper");
         stage.setScene(scene);
         stage.show();
@@ -116,7 +121,6 @@ public class Main extends Application {
             for (int col = 0; col < numCols; col++) {
                 Tile tile = makeTile(col, row, grid);
                 tile.setPadding(Insets.EMPTY);
-                System.out.println(tile.getMinWidth());
                 minefieldGPane.add(tile, col, row);
                 grid[row][col] = tile;
             }
