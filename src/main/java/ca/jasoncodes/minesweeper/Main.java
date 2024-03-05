@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -61,14 +62,16 @@ public class Main extends Application {
     private int numRows = 5;
     private int numCols = 5;
 
+    private boolean isPlaying = true;
     /* These controls get injected from the ui.fxml file */
     @FXML
     private HBox smileHBox;
     @FXML
-    private GridPane minefieldGPane;
-    @FXML
     private Button smileBTN;
+    @FXML
+    private VBox vBoxForMinefield;
 
+    private GridPane minefieldGPane;
     @Override
     public void start(Stage stage) throws IOException {
         /* Load the fxml file that builds the ui */
@@ -79,8 +82,12 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
 
+        minefieldGPane = new GridPane();
+        vBoxForMinefield.getChildren().add(minefieldGPane);
+
         /* Setup the smileBTN */
         setupSmileBTN();
+
         setupMinefield();
 
     }
@@ -92,6 +99,7 @@ public class Main extends Application {
         smileBTN.setOnMouseClicked((mouseEvent -> {
             System.out.println(mouseEvent.getSource().toString());
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                isPlaying = true;
                 System.out.println("LEFT");
                 setupSmileBTN();
                 setupMinefield();
@@ -101,13 +109,14 @@ public class Main extends Application {
 
     /* This method is responsible for setting up the minefield and its grid pane; */
     private void setupMinefield(){
-        minefieldGPane.getChildren().clear();
         Tile.reset();
         /* Set up the grid of tiles and add them to the GridPane */
         Tile[][] grid = new Tile[numRows][numCols];
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
                 Tile tile = makeTile(col, row, grid);
+                tile.setPadding(Insets.EMPTY);
+                System.out.println(tile.getMinWidth());
                 minefieldGPane.add(tile, col, row);
                 grid[row][col] = tile;
             }
@@ -127,18 +136,21 @@ public class Main extends Application {
         tile.setGraphic(new ImageView(cover));
         tile.setOnMouseClicked((e) ->{
             System.out.println(e.getSource().toString());
-            if (e.getButton() == MouseButton.PRIMARY) {
+            if (isPlaying && e.getButton() == MouseButton.PRIMARY) {
                 System.out.println("LEFT");
                 if (tile.hasMine()) {
                     tile.setGraphic(new ImageView(mineRed));
                     smileBTN.setGraphic(new ImageView(faceDead));
+                    isPlaying = false;
                 } else if (!tile.isRevealed()){
                     tile.reveal(valImageArray);
                     int bombCount = Tile.getBombCount();
                     int tileCount = Tile.getTileCount();
                     int revealedTileCount = Tile.getRevealedTileCount();
-                    if (tileCount - bombCount == revealedTileCount)
+                    if (tileCount - bombCount == revealedTileCount) {
                         smileBTN.setGraphic(new ImageView(faceWin));
+                        isPlaying = false;
+                    }
                 }
 
             }
