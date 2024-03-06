@@ -61,9 +61,27 @@ public class Main extends Application {
             {false, false, false, false, false}
     };
 
-    /* Only works with a 5x5 for now as makeTile() uses the testGrid which is 5x5 */
-    private int numRows = 5;
-    private int numCols = 5;
+    /* Various constant variables for setting up games */
+
+        /* Beginner */
+    private final int beginnerMineCount = 10;
+    private final int beginnerNumRows = 8;
+    private final int beginnerNumCols = 8;
+
+        /* Intermediate */
+    private final int intermediateMineCount = 40;
+    private final int intermediateNumRows = 16;
+    private final int intermediateNumCols = 16;
+
+        /* Expert */
+    private final int expertMineCount = 99;
+    private final int expertNumRows = 16;
+    private final int expertNumCols = 32;
+
+
+    private int numRows = beginnerNumRows;
+    private int numCols = beginnerNumCols;
+    private int totalSquares = numRows * numCols;
 
     private boolean isPlaying = true;
     /* These controls get injected from the ui.fxml file */
@@ -90,11 +108,15 @@ public class Main extends Application {
         minefieldGPane = new GridPane();
         vBoxForMinefield.getChildren().add(minefieldGPane);
 
-        /* Setup the smileBTN */
+
+        reset();
+
+    }
+
+    /* Reset the game */
+    private void reset() {
         setupSmileBTN();
-
         setupMinefield();
-
     }
 
     /* This method sets up the smileBTN with the appropriate behaviour */
@@ -106,10 +128,15 @@ public class Main extends Application {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                 isPlaying = true;
                 System.out.println("LEFT");
-                setupSmileBTN();
-                setupMinefield();
+                reset();
             }
         }));
+    }
+
+    /* This method is responsible for randomizing bomb location */
+    private boolean[][] generateRandomMinefield(int rows, int cols){
+        // generate a boolean array of totalSquares size and then shuffle the array
+        return null;
     }
 
     /* This method is responsible for setting up the minefield and its grid pane; */
