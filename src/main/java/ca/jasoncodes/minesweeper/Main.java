@@ -150,13 +150,32 @@ public class Main extends Application {
 
         System.out.println(Arrays.toString(mines));
         shuffle(mines);
-        System.out.println(Arrays.toString(mines));
         boolean[][] mines2D = convertTo2DArray(mines, numCols);
-        return null;
+        displayArray(mines2D);
+        return mines2D;
+    }
+
+    private void displayArray(boolean[][] arr) {
+        StringBuilder out = new StringBuilder();
+        out.append("-".repeat(arr[0].length + 2));
+        out.append("\n");
+        for (boolean[] row : arr) {
+            out.append('|');
+            for (boolean b : row) {
+                if (b) {
+                    out.append("X");
+                } else {
+                    out.append("o");
+                }
+            }
+            out.append("|\n");
+        }
+        out.append("-".repeat(arr[0].length + 2));
+        System.out.println(out);
     }
 
     /* Modifies the input array that is shuffled using a Fisher-Yates shuffle */
-    /* https://www.youtube.com/watch?v=4zx5bM2OcvA helped a lot with this */
+    /* https://www.youtube.com/watch?v=4zx5bM2OcvA helped a lot with this + my amazing prof Jim Nastos :) */
     private <T> void shuffle(T[] arr) {
         Random rand = new Random();
         for (int i = 0; i < arr.length; i++) {
@@ -180,17 +199,22 @@ public class Main extends Application {
     /* Converts a one dimensional array to a 2D dimensional array with the specified # of values per row */
     private boolean[][] convertTo2DArray(boolean[] arr, int numCols) {
         boolean[][] temp = new boolean[Math.ceilDiv(arr.length, numCols)][numCols];
-        
+        for (int i = 0; i < arr.length; i++) {
+            temp[i/numCols][i%numCols] = arr[i];
+        }
+        return temp;
     }
 
     /* This method is responsible for setting up the minefield and its grid pane; */
     private void setupMinefield(){
         Tile.reset();
+        boolean[][] minefield = generateRandomMinefield(numRows, numCols);
+
         /* Set up the grid of tiles and add them to the GridPane */
         Tile[][] grid = new Tile[numRows][numCols];
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
-                Tile tile = makeTile(col, row, grid);
+                Tile tile = makeTile(col, row, grid, minefield);
                 tile.setPadding(Insets.EMPTY);
                 minefieldGPane.add(tile, col, row);
                 grid[row][col] = tile;
@@ -204,8 +228,8 @@ public class Main extends Application {
     }
 
     /* This is a helper method for creating tiles to be added to the grid pane */
-    private Tile makeTile(int col, int row, Tile[][] grid) {
-        Tile tile = new Tile(col, row, testGrid[row][col], grid);
+    private Tile makeTile(int col, int row, Tile[][] grid, boolean[][] minefield) {
+        Tile tile = new Tile(col, row, minefield[row][col], grid);
         tile.setMaxHeight(32);
         tile.setMaxWidth(32);
         tile.setGraphic(new ImageView(cover));
@@ -239,9 +263,13 @@ public class Main extends Application {
     }
 }
 
+class PlayAreaGP extends GridPane {
+
+}
+
 
 /* Mostly adopted from lecture code */
-class Tile extends Button{
+class Tile extends Button {
     private static int tileCount;
     private static int revealedTileCount;
     private static int bombCount;
@@ -315,6 +343,7 @@ class Tile extends Button{
         bombCount = 0;
         tileCount = 0;
         revealedTileCount = 0;
+
     }
 
     public String toString() {
