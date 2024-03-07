@@ -16,7 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.*;
 
 public class Main extends Application {
     /* Load all our images */    /* Intellij suggested to add Objects.requiredNonNull because getting the resource might be null */
@@ -81,6 +81,7 @@ public class Main extends Application {
 
     private int numRows = beginnerNumRows;
     private int numCols = beginnerNumCols;
+    private int totalMines = beginnerMineCount;
     private int totalSquares = numRows * numCols;
 
     private boolean isPlaying = true;
@@ -117,6 +118,7 @@ public class Main extends Application {
     private void reset() {
         setupSmileBTN();
         setupMinefield();
+
     }
 
     /* This method sets up the smileBTN with the appropriate behaviour */
@@ -135,8 +137,50 @@ public class Main extends Application {
 
     /* This method is responsible for randomizing bomb location */
     private boolean[][] generateRandomMinefield(int rows, int cols){
-        // generate a boolean array of totalSquares size and then shuffle the array
+        // Generate a boolean array of totalSquares size and then shuffle the array
+        int totalTiles = rows * cols;
+        boolean[] mines = new boolean[totalTiles];
+        for (int i = 0; i < totalTiles; i++) {
+            if (i < totalMines) {
+                mines[i] = true;
+            } else {
+                mines[i] = false;
+            }
+        }
+
+        System.out.println(Arrays.toString(mines));
+        shuffle(mines);
+        System.out.println(Arrays.toString(mines));
+        boolean[][] mines2D = convertTo2DArray(mines, numCols);
         return null;
+    }
+
+    /* Modifies the input array that is shuffled using a Fisher-Yates shuffle */
+    /* https://www.youtube.com/watch?v=4zx5bM2OcvA helped a lot with this */
+    private <T> void shuffle(T[] arr) {
+        Random rand = new Random();
+        for (int i = 0; i < arr.length; i++) {
+            int r = rand.nextInt(i,arr.length);
+            T temp = arr[i];
+            arr[i] = arr[r];
+            arr[r] = temp;
+        }
+    }
+
+    private void shuffle(boolean[] arr) {
+        Random rand = new Random();
+        for (int i = 0; i < arr.length; i++) {
+            int r = rand.nextInt(i,arr.length);
+            boolean temp = arr[i];
+            arr[i] = arr[r];
+            arr[r] = temp;
+        }
+    }
+
+    /* Converts a one dimensional array to a 2D dimensional array with the specified # of values per row */
+    private boolean[][] convertTo2DArray(boolean[] arr, int numCols) {
+        boolean[][] temp = new boolean[Math.ceilDiv(arr.length, numCols)][numCols];
+        
     }
 
     /* This method is responsible for setting up the minefield and its grid pane; */
