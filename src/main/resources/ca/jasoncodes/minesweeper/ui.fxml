@@ -42,9 +42,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fillWidth="false" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="mainVBox" fillWidth="false" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-    <MenuBar style="-fx-background-color: eee8d6;" VBox.vgrow="NEVER">
+    <MenuBar style="-fx-background-color: eee8d6;" VBox.vgrow="ALWAYS">
       <menus>
         <Menu mnemonicParsing="false" style="-fx-padding: 2 0 2 2;" text="Game">
                <items>
@@ -59,86 +59,82 @@
         <children>
             <VBox fillWidth="false" spacing="7.0" style="-fx-border-width: 5; -fx-border-color: c0c0c0;">
                <children>
-                  <HBox style="-fx-border-color: c0c0c0;">
+                  <HBox fx:id="timerContainer" alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" style="-fx-border-style: solid; -fx-border-width: 2; -fx-border-color: #7f7f7f white white #7f7f7f;">
                      <children>
-                        <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" style="-fx-border-style: solid; -fx-border-width: 2; -fx-border-color: #7f7f7f white white #7f7f7f;">
+                        <HBox alignment="CENTER">
                            <children>
-                              <HBox alignment="CENTER">
+                              <HBox alignment="CENTER" fillHeight="false" maxHeight="23.0" style="-fx-border-color: #7f7f7f white white #7f7f7f; -fx-border-width: 1.5;">
                                  <children>
-                                    <HBox alignment="CENTER" fillHeight="false" maxHeight="23.0" style="-fx-border-color: #7f7f7f white white #7f7f7f; -fx-border-width: 1.5;">
-                                       <children>
-                                          <ImageView fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../../images/t0.png" />
-                                             </image>
-                                          </ImageView>
-                                          <ImageView fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../../images/t0.png" />
-                                             </image>
-                                          </ImageView>
-                                          <ImageView fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../../images/t0.png" />
-                                             </image>
-                                          </ImageView>
-                                       </children>
-                                    </HBox>
+                                    <ImageView fx:id="bombCounterHundreds" fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../images/t0.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="bombCounterTens" fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../images/t0.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="bombCounterOnes" fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../images/t0.png" />
+                                       </image>
+                                    </ImageView>
                                  </children>
-                                 <opaqueInsets>
-                                    <Insets />
-                                 </opaqueInsets>
-                                 <padding>
-                                    <Insets left="5.0" right="5.0" />
-                                 </padding>
-                              </HBox>
-                              <HBox fx:id="smileHBox" fillHeight="false">
-                                 <padding>
-                                    <Insets bottom="5.0" top="5.0" />
-                                 </padding>
-                                 <children>
-                                    <Button fx:id="smileBTN" alignment="CENTER" focusTraversable="false" graphicTextGap="0.0" mnemonicParsing="false">
-                                       <opaqueInsets>
-                                          <Insets />
-                                       </opaqueInsets>
-                                    </Button>
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER" layoutX="12.0" layoutY="12.0">
-                                 <children>
-                                    <HBox alignment="CENTER" fillHeight="false" maxHeight="23.0" style="-fx-border-color: #7f7f7f white white #7f7f7f; -fx-border-width: 1.5;">
-                                       <children>
-                                          <ImageView fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../../images/t0.png" />
-                                             </image>
-                                          </ImageView>
-                                          <ImageView fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../../images/t0.png" />
-                                             </image>
-                                          </ImageView>
-                                          <ImageView fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../../images/t0.png" />
-                                             </image>
-                                          </ImageView>
-                                       </children>
-                                    </HBox>
-                                 </children>
-                                 <opaqueInsets>
-                                    <Insets />
-                                 </opaqueInsets>
-                                 <padding>
-                                    <Insets left="5.0" right="5.0" />
-                                 </padding>
                               </HBox>
                            </children>
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets>
+                           <padding>
+                              <Insets left="5.0" right="5.0" />
+                           </padding>
+                        </HBox>
+                        <HBox fx:id="smileHBox" fillHeight="false">
+                           <padding>
+                              <Insets bottom="5.0" top="5.0" />
+                           </padding>
+                           <children>
+                              <Button fx:id="smileBTN" alignment="CENTER" focusTraversable="false" graphicTextGap="0.0" mnemonicParsing="false">
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" layoutX="12.0" layoutY="12.0">
+                           <children>
+                              <HBox alignment="CENTER" fillHeight="false" maxHeight="23.0" style="-fx-border-color: #7f7f7f white white #7f7f7f; -fx-border-width: 1.5;">
+                                 <children>
+                                    <ImageView fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../images/t0.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../images/t0.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../images/t0.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets left="5.0" right="5.0" />
+                           </padding>
                         </HBox>
                      </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
                   </HBox>
                   <VBox fx:id="vBoxForMinefield" style="-fx-border-color: #7f7f7f white white #7f7f7f; -fx-border-width: 3;" />
                </children>

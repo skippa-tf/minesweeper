@@ -14,6 +14,9 @@
   - Intermediate level: 16 x 16 board with 40 mines.
   - Expert level: 32 x 16 board with 99 mines.
 
+- Bind components to the right width properties so that things get resized correctly.
+
+
 
 - Prepare for submission:
     - Ensure all requirements are met.
@@ -21,7 +24,7 @@
     - Package the project files for submission.
 --------
 ## If Time Permits:
-- Create a play area class that manages the minefield gridpane.
+- Create a play area class that manages the minefield gridpane and minefield logic.
 - Document the codebase:
     - Add comments explaining the purpose and functionality of each section.
     - Provide clear instructions for future developers or collaborators.

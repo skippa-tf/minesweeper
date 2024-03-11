@@ -30,6 +30,8 @@ public class Main extends Application {
     private final Image T7 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t7.png")));
     private final Image T8 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t8.png")));
     private final Image T9 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t9.png")));
+    private final Image[] TIMER_IMAGE_ARRAY = new Image[] {T0, T1, T2, T3, T4, T5, T6, T7, T8, T9};
+
     private final Image ZERO = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/0.png")));
     private final Image ONE = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/1.png")));
     private final Image TWO = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/2.png")));
@@ -78,13 +80,16 @@ public class Main extends Application {
     private final int expertNumRows = 16;
     private final int expertNumCols = 32;
 
-
+    /* Game Vars */
     private int numRows = beginnerNumRows;
     private int numCols = beginnerNumCols;
     private int totalMines = beginnerMineCount;
+    private int totalFlagged;
     private int totalSquares = numRows * numCols;
+    private Tile[][] tileGrid;
+    private boolean firstTurn = true;
 
-    private boolean isPlaying = true;
+    private boolean playing = true;
     /* These controls get injected (and instantiated) via the FXMLLoader. */
     @FXML
     private HBox smileHBox;
@@ -92,8 +97,20 @@ public class Main extends Application {
     private Button smileBTN;
     @FXML
     private VBox vBoxForMinefield;
-
+    @FXML
+    private VBox mainVBox;
+    @FXML
     private GridPane minefieldGPane;
+    @FXML
+    private HBox timerContainer;
+    @FXML
+    private ImageView bombCounterHundreds;
+    @FXML
+    private ImageView bombCounterTens;
+    @FXML
+    private ImageView bombCounterOnes;
+
+
     @Override
     public void start(Stage stage) throws IOException {
         /* Load the fxml file that builds the ui */
@@ -101,11 +118,13 @@ public class Main extends Application {
         fxmlLoader.setController(this);
 
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setWidth(320);
-        stage.setHeight(450);
+
+        stage.setWidth(295);
+        stage.setHeight(415);
         stage.setTitle("Minesweeper");
         stage.setScene(scene);
         stage.show();
+
 
         minefieldGPane = new GridPane();
         vBoxForMinefield.getChildren().add(minefieldGPane);
@@ -115,11 +134,34 @@ public class Main extends Application {
 
     }
 
+    /* Player lost */
+    private void gameOver(int row, int col) {
+        for (Tile[] gridRow : tileGrid){
+            for (Tile t : gridRow) {
+                if (t.isMine()) {
+                    if (!t.isFlagged()) {
+                        t.setGraphic(new ImageView(MINE_GREY));
+                    }
+                } else {
+                    if (t.isFlagged()) {
+                        t.setGraphic(new ImageView(MINE_MISFLAGGED));
+                    }
+                }
+            }
+        }
+
+        tileGrid[row][col].setGraphic(new ImageView(MINE_RED));
+        smileBTN.setGraphic(new ImageView(FACE_DEAD));
+        playing = false;
+    }
     /* Reset the game */
     private void reset() {
+        totalFlagged = 0;
+        firstTurn = true;
         setupSmileBTN();
         setupMinefield();
-
+        updateBombCounter();
+        Tile.reset();
     }
 
     /* This method sets up the smileBTN with the appropriate behaviour */
@@ -129,11 +171,32 @@ public class Main extends Application {
         smileBTN.setOnMouseClicked((mouseEvent -> {
             System.out.println(mouseEvent.getSource().toString());
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                isPlaying = true;
+                playing = true;
                 System.out.println("LEFT");
                 reset();
             }
         }));
+    }
+
+    /* This method is responsible for setting up the minefield and its grid pane; */
+    private void setupMinefield(){
+        boolean[][] minefield = generateRandomMinefield(numRows, numCols);
+
+        /* Set up the grid of tiles and add them to the GridPane */
+        tileGrid = new Tile[numRows][numCols];
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < numCols; col++) {
+                Tile tile = makeTile(col, row, tileGrid, minefield);
+                tile.setPadding(Insets.EMPTY);
+                minefieldGPane.add(tile, col, row);
+                tileGrid[row][col] = tile;
+            }
+        }
+        /* Once the grid is instantiated, set the vals for each tile */
+        for (Tile[] tRow : tileGrid)
+            for (Tile t : tRow) {
+                t.setVal(tileGrid);
+            }
     }
 
     /* This method is responsible for randomizing bomb location */
@@ -142,11 +205,7 @@ public class Main extends Application {
         int totalTiles = rows * cols;
         boolean[] mines = new boolean[totalTiles];
         for (int i = 0; i < totalTiles; i++) {
-            if (i < totalMines) {
-                mines[i] = true;
-            } else {
-                mines[i] = false;
-            }
+            mines[i] = i < totalMines;
         }
 
         shuffle(mines);
@@ -154,6 +213,8 @@ public class Main extends Application {
         displayArray(mines2D);
         return mines2D;
     }
+
+
 
     private void displayArray(boolean[][] arr) {
         StringBuilder out = new StringBuilder();
@@ -205,26 +266,17 @@ public class Main extends Application {
         return temp;
     }
 
-    /* This method is responsible for setting up the minefield and its grid pane; */
-    private void setupMinefield(){
-        Tile.reset();
-        boolean[][] minefield = generateRandomMinefield(numRows, numCols);
 
-        /* Set up the grid of tiles and add them to the GridPane */
-        Tile[][] grid = new Tile[numRows][numCols];
-        for (int row = 0; row < numRows; row++) {
-            for (int col = 0; col < numCols; col++) {
-                Tile tile = makeTile(col, row, grid, minefield);
-                tile.setPadding(Insets.EMPTY);
-                minefieldGPane.add(tile, col, row);
-                grid[row][col] = tile;
-            }
-        }
-        /* Once the grid is instantiated, set the vals for each tile */
-        for (Tile[] tRow : grid)
-            for (Tile t : tRow) {
-                t.setVal(grid);
-            }
+    private void updateBombCounter() {
+        int total = totalMines - totalFlagged;
+
+        int hundreds = total / 100;
+        int tens = (total % 100) / 10;
+        int ones = (total % 100) % 10;
+
+        bombCounterHundreds.setImage(TIMER_IMAGE_ARRAY[hundreds]);
+        bombCounterTens.setImage(TIMER_IMAGE_ARRAY[tens]);
+        bombCounterOnes.setImage(TIMER_IMAGE_ARRAY[ones]);
     }
 
     /* This is a helper method for creating tiles to be added to the grid pane */
@@ -235,21 +287,23 @@ public class Main extends Application {
         tile.setGraphic(new ImageView(COVER));
         tile.setOnMouseClicked((e) ->{
             System.out.println(e.getSource().toString());
-            if (isPlaying) {
+            if (playing) {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     System.out.println("LEFT");
                     if (tile.isMine()) {
-                        tile.setGraphic(new ImageView(MINE_RED));
-                        smileBTN.setGraphic(new ImageView(FACE_DEAD));
-                        isPlaying = false;
+                        if (firstTurn) {
+                            setupMinefield();
+                        } else {
+                            gameOver(tile.getRow(), tile.getCol());
+                        }
                     } else if (!tile.isRevealed()) {
-                        tile.reveal(VAL_IMAGE_ARRAY);
+                        tile.reveal();
                         int bombCount = Tile.getBombCount();
                         int tileCount = Tile.getTileCount();
                         int revealedTileCount = Tile.getRevealedTileCount();
                         if (tileCount - bombCount == revealedTileCount) {
                             smileBTN.setGraphic(new ImageView(FACE_WIN));
-                            isPlaying = false;
+                            playing = false;
                         }
                     }
                 } else if (e.getButton() == MouseButton.SECONDARY) {
@@ -262,6 +316,7 @@ public class Main extends Application {
     }
 
 
+
     public static void main(String[] args) {
         launch();
     }
@@ -272,10 +327,12 @@ public class Main extends Application {
         private static int tileCount;
         private static int revealedTileCount;
         private static int bombCount;
+
         private final int col;
         private final int row;
-        private int val;
         private final boolean mine;
+
+        private int val;
         private boolean revealed;
         private boolean flagged;
 
@@ -332,25 +389,28 @@ public class Main extends Application {
 
 
         /* This method "reveals" the tile and sets the image to the correct value */
-        public void reveal(Image[] imgArr){
+        public void reveal(){
             if (!isFlagged()) {
                 revealedTileCount++;
                 //System.out.println("Revealed Tile Count: " + revealedTileCount);
                 revealed = true;
-                this.setGraphic(new ImageView(imgArr[this.getVal()]));
+                this.setGraphic(new ImageView(VAL_IMAGE_ARRAY[this.getVal()]));
             }
         }
 
         public void toggleFlag() {
             if (!isRevealed()) {
                 if (!isFlagged()) {
+                    totalFlagged++;
                     flagged = true;
                     this.setGraphic(new ImageView(FLAG));
                 } else {
+                    totalFlagged--;
                     flagged = false;
                     this.setGraphic(new ImageView(COVER));
                 }
             }
+            updateBombCounter();
         }
 
 
