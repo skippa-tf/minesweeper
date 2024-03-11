@@ -20,37 +20,37 @@ import java.util.*;
 
 public class Main extends Application {
     /* Load all our images */    /* Intellij suggested to add Objects.requiredNonNull because getting the resource might be null */
-    private final Image t0 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t0.png")));
-    private final Image t1 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t1.png")));
-    private final Image t2 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t2.png")));
-    private final Image t3 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t3.png")));
-    private final Image t4 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t4.png")));
-    private final Image t5 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t5.png")));
-    private final Image t6 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t6.png")));
-    private final Image t7 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t7.png")));
-    private final Image t8 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t8.png")));
-    private final Image t9 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t9.png")));
-    private final Image zero = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/0.png")));
-    private final Image one = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/1.png")));
-    private final Image two = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/2.png")));
-    private final Image three = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/3.png")));
-    private final Image four = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/4.png")));
-    private final Image five = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/5.png")));
-    private final Image six = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/6.png")));
-    private final Image seven = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/7.png")));
-    private final Image eight = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/8.png")));
+    private final Image T0 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t0.png")));
+    private final Image T1 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t1.png")));
+    private final Image T2 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t2.png")));
+    private final Image T3 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t3.png")));
+    private final Image T4 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t4.png")));
+    private final Image T5 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t5.png")));
+    private final Image T6 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t6.png")));
+    private final Image T7 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t7.png")));
+    private final Image T8 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t8.png")));
+    private final Image T9 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/t9.png")));
+    private final Image ZERO = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/0.png")));
+    private final Image ONE = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/1.png")));
+    private final Image TWO = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/2.png")));
+    private final Image THREE = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/3.png")));
+    private final Image FOUR = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/4.png")));
+    private final Image FIVE = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/5.png")));
+    private final Image SIX = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/6.png")));
+    private final Image SEVEN = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/7.png")));
+    private final Image EIGHT = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/8.png")));
     /* This array is used to make image grabbing easy with an index */
-    private final Image[] valImageArray = new Image[] {zero, one, two, three, four, five, six, seven, eight};
+    private final Image[] VAL_IMAGE_ARRAY = new Image[] {ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT};
 
-    private final Image bombRevealedBicubic = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/bombrevealed-bicubic.png")));
-    private final Image cover = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/cover.png")));
-    private final Image faceDead = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/face-dead.png")));
-    private final Image faceSmile = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/face-smile.png")));
-    private final Image faceWin = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/face-win.png")));
-    private final Image flag = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/flag.png")));
-    private final Image mineGrey = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mine-grey.png")));
-    private final Image mineMisflagged = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mine-misflagged.png")));
-    private final Image mineRed = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mine-red.png")));
+    private final Image BOMB_REVEALED_BICUBIC = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/bombrevealed-bicubic.png")));
+    private final Image COVER = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/cover.png")));
+    private final Image FACE_DEAD = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/face-dead.png")));
+    private final Image FACE_SMILE = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/face-smile.png")));
+    private final Image FACE_WIN = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/face-win.png")));
+    private final Image FLAG = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/flag.png")));
+    private final Image MINE_RED = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mine-red.png")));
+    private final Image MINE_GREY = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mine-grey.png")));
+    private final Image MINE_MISFLAGGED = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mine-misflagged.png")));
 
     /* Init the testing grid */
     private final boolean[][] testGrid = {
@@ -85,7 +85,7 @@ public class Main extends Application {
     private int totalSquares = numRows * numCols;
 
     private boolean isPlaying = true;
-    /* These controls get injected from the ui.fxml file */
+    /* These controls get injected (and instantiated) via the FXMLLoader. */
     @FXML
     private HBox smileHBox;
     @FXML
@@ -99,9 +99,10 @@ public class Main extends Application {
         /* Load the fxml file that builds the ui */
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ui.fxml"));
         fxmlLoader.setController(this);
+
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setWidth(200);
-        stage.setHeight(350);
+        stage.setWidth(320);
+        stage.setHeight(450);
         stage.setTitle("Minesweeper");
         stage.setScene(scene);
         stage.show();
@@ -123,7 +124,7 @@ public class Main extends Application {
 
     /* This method sets up the smileBTN with the appropriate behaviour */
     private void setupSmileBTN(){
-        smileBTN.setGraphic(new ImageView(faceSmile));
+        smileBTN.setGraphic(new ImageView(FACE_SMILE));
         smileBTN.setPadding(Insets.EMPTY);
         smileBTN.setOnMouseClicked((mouseEvent -> {
             System.out.println(mouseEvent.getSource().toString());
@@ -148,7 +149,6 @@ public class Main extends Application {
             }
         }
 
-        System.out.println(Arrays.toString(mines));
         shuffle(mines);
         boolean[][] mines2D = convertTo2DArray(mines, numCols);
         displayArray(mines2D);
@@ -174,7 +174,7 @@ public class Main extends Application {
         System.out.println(out);
     }
 
-    /* Modifies the input array that is shuffled using a Fisher-Yates shuffle */
+    /* Uses a Fisher-Yates shuffle to ensure the contents of the array are properly and evenly shuffled. */
     /* https://www.youtube.com/watch?v=4zx5bM2OcvA helped a lot with this + my amazing prof Jim Nastos :) */
     private <T> void shuffle(T[] arr) {
         Random rand = new Random();
@@ -232,26 +232,30 @@ public class Main extends Application {
         Tile tile = new Tile(col, row, minefield[row][col], grid);
         tile.setMaxHeight(32);
         tile.setMaxWidth(32);
-        tile.setGraphic(new ImageView(cover));
+        tile.setGraphic(new ImageView(COVER));
         tile.setOnMouseClicked((e) ->{
             System.out.println(e.getSource().toString());
-            if (isPlaying && e.getButton() == MouseButton.PRIMARY) {
-                System.out.println("LEFT");
-                if (tile.hasMine()) {
-                    tile.setGraphic(new ImageView(mineRed));
-                    smileBTN.setGraphic(new ImageView(faceDead));
-                    isPlaying = false;
-                } else if (!tile.isRevealed()){
-                    tile.reveal(valImageArray);
-                    int bombCount = Tile.getBombCount();
-                    int tileCount = Tile.getTileCount();
-                    int revealedTileCount = Tile.getRevealedTileCount();
-                    if (tileCount - bombCount == revealedTileCount) {
-                        smileBTN.setGraphic(new ImageView(faceWin));
+            if (isPlaying) {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    System.out.println("LEFT");
+                    if (tile.isMine()) {
+                        tile.setGraphic(new ImageView(MINE_RED));
+                        smileBTN.setGraphic(new ImageView(FACE_DEAD));
                         isPlaying = false;
+                    } else if (!tile.isRevealed()) {
+                        tile.reveal(VAL_IMAGE_ARRAY);
+                        int bombCount = Tile.getBombCount();
+                        int tileCount = Tile.getTileCount();
+                        int revealedTileCount = Tile.getRevealedTileCount();
+                        if (tileCount - bombCount == revealedTileCount) {
+                            smileBTN.setGraphic(new ImageView(FACE_WIN));
+                            isPlaying = false;
+                        }
                     }
+                } else if (e.getButton() == MouseButton.SECONDARY) {
+                    System.out.println("RIGHT");
+                    tile.toggleFlag();
                 }
-
             }
         });
         return tile;
@@ -261,6 +265,106 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch();
     }
+
+
+    /* Mostly adopted from lecture code */
+    class Tile extends Button {
+        private static int tileCount;
+        private static int revealedTileCount;
+        private static int bombCount;
+        private final int col;
+        private final int row;
+        private int val;
+        private final boolean mine;
+        private boolean revealed;
+        private boolean flagged;
+
+        public int getCol() { return col; }
+        public int getRow() { return row; }
+        public int getVal() { return val; }
+        public boolean isRevealed() { return revealed; }
+        public boolean isFlagged() { return flagged; }
+        public boolean isMine() { return mine; }
+        public static int getTileCount() { return tileCount; }
+        public static int getRevealedTileCount() { return revealedTileCount; }
+        public static int getBombCount() { return bombCount; }
+
+
+        public Tile(int col, int row, boolean mine, Tile[][] grid) {
+            this.col = col;
+            this.row = row;
+            this.mine = mine;
+            if (mine)
+                bombCount++;
+            tileCount++;
+            setPadding(Insets.EMPTY);
+            //System.out.println("Tile count: " + tileCount + "\nBomb count: " + bombCount);
+        }
+
+
+        /* This method checks the tiles around this tile and sets its value to the bomb count */
+        public void setVal(Tile[][] grid) {
+            int row = this.getRow();
+            int col = this.getCol();
+            int sum = 0;
+            int numRows = grid.length;
+            int numCols = grid[0].length;
+            /* Check the tiles around the current tile for bombs and sum the bomb count */
+            // Top left
+            if (col > 0 && row > 0 && grid[row-1][col-1].isMine()) { sum++; }
+            // Top middle
+            if (row > 0 && grid[row-1][col].isMine()) { sum++; }
+            // Top right
+            if (col < numCols - 1 && row > 0 && grid[row-1][col+1].isMine()) { sum++; }
+            // Right
+            if (col < numCols - 1 && grid[row][col+1].isMine()) { sum++; }
+            // Bottom right
+            if (col < numCols - 1 && row < numRows - 1 && grid[row+1][col+1].isMine()) { sum++; }
+            // Bottom middle
+            if (row < numRows - 1 && grid[row+1][col].isMine()) { sum++; }
+            // Bottom left
+            if (col > 0 && row < numRows - 1 && grid[row+1][col-1].isMine()) { sum++; }
+            // Left
+            if (col > 0 && grid[row][col-1].isMine()) { sum++; }
+
+            this.val = sum;
+        }
+
+
+        /* This method "reveals" the tile and sets the image to the correct value */
+        public void reveal(Image[] imgArr){
+            if (!isFlagged()) {
+                revealedTileCount++;
+                //System.out.println("Revealed Tile Count: " + revealedTileCount);
+                revealed = true;
+                this.setGraphic(new ImageView(imgArr[this.getVal()]));
+            }
+        }
+
+        public void toggleFlag() {
+            if (!isRevealed()) {
+                if (!isFlagged()) {
+                    flagged = true;
+                    this.setGraphic(new ImageView(FLAG));
+                } else {
+                    flagged = false;
+                    this.setGraphic(new ImageView(COVER));
+                }
+            }
+        }
+
+
+        public static void reset() {
+            bombCount = 0;
+            tileCount = 0;
+            revealedTileCount = 0;
+
+        }
+
+        public String toString() {
+            return "(" + getCol() + ", " + getRow() + "): " + super.toString();
+        }
+    }
 }
 
 class PlayAreaGP extends GridPane {
@@ -268,85 +372,3 @@ class PlayAreaGP extends GridPane {
 }
 
 
-/* Mostly adopted from lecture code */
-class Tile extends Button {
-    private static int tileCount;
-    private static int revealedTileCount;
-    private static int bombCount;
-    private final int col;
-    private final int row;
-    private int val;
-    private final boolean hasMine;
-    private boolean isRevealed;
-
-    public int getCol() { return col; }
-    public int getRow() { return row; }
-    public int getVal() { return val; }
-    public boolean isRevealed() { return isRevealed; }
-    public boolean hasMine() { return hasMine; }
-    public static int getTileCount() { return tileCount; }
-    public static int getRevealedTileCount() { return revealedTileCount; }
-    public static int getBombCount() { return bombCount; }
-
-
-    public Tile(int col, int row, boolean hasMine, Tile[][] grid) {
-        this.col = col;
-        this.row = row;
-        this.hasMine = hasMine;
-        if (hasMine)
-            bombCount++;
-        tileCount++;
-        setPadding(Insets.EMPTY);
-        //System.out.println("Tile count: " + tileCount + "\nBomb count: " + bombCount);
-    }
-
-
-    /* This method checks the tiles around this tile and sets its value to the bomb count */
-    public void setVal(Tile[][] grid) {
-        int row = this.getRow();
-        int col = this.getCol();
-        int sum = 0;
-        int numRows = grid.length;
-        int numCols = grid[0].length;
-        /* Check the tiles around the current tile for bombs and sum the bomb count */
-        // Top left
-        if (col > 0 && row > 0 && grid[row-1][col-1].hasMine()) { sum++; }
-        // Top middle
-        if (row > 0 && grid[row-1][col].hasMine()) { sum++; }
-        // Top right
-        if (col < numCols - 1 && row > 0 && grid[row-1][col+1].hasMine()) { sum++; }
-        // Right
-        if (col < numCols - 1 && grid[row][col+1].hasMine()) { sum++; }
-        // Bottom right
-        if (col < numCols - 1 && row < numRows - 1 && grid[row+1][col+1].hasMine()) { sum++; }
-        // Bottom middle
-        if (row < numRows - 1 && grid[row+1][col].hasMine()) { sum++; }
-        // Bottom left
-        if (col > 0 && row < numRows - 1 && grid[row+1][col-1].hasMine()) { sum++; }
-        // Left
-        if (col > 0 && grid[row][col-1].hasMine()) { sum++; }
-
-        this.val = sum;
-    }
-
-
-    /* This method "reveals" the tile and sets the image to the correct value */
-    public void reveal(Image[] imgArr){
-        revealedTileCount++;
-        //System.out.println("Revealed Tile Count: " + revealedTileCount);
-        isRevealed = true;
-        this.setGraphic(new ImageView(imgArr[this.getVal()]));
-    }
-
-
-    public static void reset() {
-        bombCount = 0;
-        tileCount = 0;
-        revealedTileCount = 0;
-
-    }
-
-    public String toString() {
-        return "(" + getCol() + ", " + getRow() + "): " + super.toString();
-    }
-}
