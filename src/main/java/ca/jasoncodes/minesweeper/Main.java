@@ -1,3 +1,6 @@
+/**
+ *  SEE README FOR PROJECT INFO.
+ */
 
 package ca.jasoncodes.minesweeper;
 
@@ -65,17 +68,17 @@ public class Main extends Application {
 
     /* Various constant variables for setting up games */
 
-        /* Beginner */
+    /* Beginner */
     private final int beginnerMineCount = 10;
     private final int beginnerNumRows = 8;
     private final int beginnerNumCols = 8;
 
-        /* Intermediate */
+    /* Intermediate */
     private final int intermediateMineCount = 40;
     private final int intermediateNumRows = 16;
     private final int intermediateNumCols = 16;
 
-        /* Expert */
+    /* Expert */
     private final int expertMineCount = 99;
     private final int expertNumRows = 16;
     private final int expertNumCols = 32;
@@ -85,7 +88,7 @@ public class Main extends Application {
     private int numCols = beginnerNumCols;
     private int totalMines = beginnerMineCount;
     private int totalFlagged;
-    private int totalSquares = numRows * numCols;
+    private int totalTiles = numRows * numCols;
     private Tile[][] tileGrid;
     private boolean firstTurn = true;
 
@@ -157,7 +160,6 @@ public class Main extends Application {
     /* Reset the game */
     private void reset() {
         totalFlagged = 0;
-        firstTurn = true;
         setupSmileBTN();
         setupMinefield();
         updateBombCounter();
@@ -181,7 +183,7 @@ public class Main extends Application {
     /* This method is responsible for setting up the minefield and its grid pane; */
     private void setupMinefield(){
         boolean[][] minefield = generateRandomMinefield(numRows, numCols);
-
+        firstTurn = true;
         /* Set up the grid of tiles and add them to the GridPane */
         tileGrid = new Tile[numRows][numCols];
         for (int row = 0; row < numRows; row++) {
@@ -298,23 +300,27 @@ public class Main extends Application {
                         }
                     } else if (!tile.isRevealed()) {
                         tile.reveal();
-                        int bombCount = Tile.getBombCount();
-                        int tileCount = Tile.getTileCount();
-                        int revealedTileCount = Tile.getRevealedTileCount();
-                        if (tileCount - bombCount == revealedTileCount) {
-                            smileBTN.setGraphic(new ImageView(FACE_WIN));
-                            playing = false;
-                        }
+                        firstTurn = false;
                     }
                 } else if (e.getButton() == MouseButton.SECONDARY) {
                     System.out.println("RIGHT");
                     tile.toggleFlag();
                 }
+                checkWin();
             }
         });
         return tile;
     }
 
+    private void checkWin() {
+
+        int revealedTileCount = Tile.getRevealedTileCount();
+
+        if (totalTiles - totalMines == revealedTileCount) {
+            smileBTN.setGraphic(new ImageView(FACE_WIN));
+            playing = false;
+        }
+    }
 
 
     public static void main(String[] args) {
@@ -324,9 +330,7 @@ public class Main extends Application {
 
     /* Mostly adopted from lecture code */
     class Tile extends Button {
-        private static int tileCount;
         private static int revealedTileCount;
-        private static int bombCount;
 
         private final int col;
         private final int row;
@@ -342,18 +346,15 @@ public class Main extends Application {
         public boolean isRevealed() { return revealed; }
         public boolean isFlagged() { return flagged; }
         public boolean isMine() { return mine; }
-        public static int getTileCount() { return tileCount; }
         public static int getRevealedTileCount() { return revealedTileCount; }
-        public static int getBombCount() { return bombCount; }
+
 
 
         public Tile(int col, int row, boolean mine, Tile[][] grid) {
             this.col = col;
             this.row = row;
             this.mine = mine;
-            if (mine)
-                bombCount++;
-            tileCount++;
+
             setPadding(Insets.EMPTY);
             //System.out.println("Tile count: " + tileCount + "\nBomb count: " + bombCount);
         }
@@ -415,10 +416,7 @@ public class Main extends Application {
 
 
         public static void reset() {
-            bombCount = 0;
-            tileCount = 0;
             revealedTileCount = 0;
-
         }
 
         public String toString() {
