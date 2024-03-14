@@ -262,13 +262,12 @@ public class Main extends Application {
                             gameOver(tile.getRow(), tile.getCol());
                         }
                     } else if (tile.isHidden()) {
-                        //tile.reveal();
-                        if (tile.reveal()) {
-                            firstTurn = false;
-                            if (tile.getVal() == 0){
-                                recursiveReveal(row, col, grid);
-                            }
+                        if (tile.getVal() == 0){
+                            recursiveReveal(row, col, grid);
+                        } else {
+                            tile.reveal();
                         }
+                        firstTurn = false;
                     }
                 } else if (e.getButton() == MouseButton.SECONDARY) {
                     System.out.println("RIGHT");
@@ -302,7 +301,32 @@ public class Main extends Application {
     }
 
     private void recursiveReveal(int row, int col, Tile[][] grid) {
+        int numRows = grid.length;
+        int numCols = grid[0].length;
 
+        //System.out.println("recursive reveal on: " + tile);
+
+        /* Check the tiles around the current tile for bombs and sum the bomb count */
+        for (int rowDir = -1; rowDir <= 1; rowDir++){
+            for (int colDir = -1; colDir <= 1; colDir++) {
+                if (rowDir == 0 && colDir == 0 ){
+                    continue;
+                }
+                int newRow = row + rowDir;
+                int newCol = col + colDir;
+                if ((newRow >= 0 && newRow < numRows) && (newCol >= 0 && newCol < numCols)) {
+                    Tile newTile = grid[newRow][newCol];
+                    if (newTile.getVal() == 0){
+                        if (!newTile.isMine() && newTile.isHidden()) {
+                            newTile.reveal();
+                            recursiveReveal(newRow, newCol, grid);
+                        }
+                    } else {
+                        newTile.reveal();
+                    }
+                }
+            }
+        }
     }
 
     private void checkWin() {
@@ -418,7 +442,7 @@ public class Main extends Application {
         }
 
         public String toString() {
-            return "(" + getCol() + ", " + getRow() + "): " + super.toString();
+            return (isMine() ? "Mine" : "Tile") + " at " + "(" + getCol() + ", " + getRow() + "): " + this.val;
         }
     }
 }
