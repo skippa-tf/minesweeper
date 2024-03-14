@@ -265,6 +265,9 @@ public class Main extends Application {
                         //tile.reveal();
                         if (tile.reveal()) {
                             firstTurn = false;
+                            if (tile.getVal() == 0){
+                                recursiveReveal(row, col, grid);
+                            }
                         }
                     }
                 } else if (e.getButton() == MouseButton.SECONDARY) {
@@ -296,6 +299,10 @@ public class Main extends Application {
         tileGrid[row][col].setGraphic(new ImageView(MINE_RED));
         smileBTN.setGraphic(new ImageView(FACE_DEAD));
         playing = false;
+    }
+
+    private void recursiveReveal(int row, int col, Tile[][] grid) {
+
     }
 
     private void checkWin() {
@@ -363,24 +370,19 @@ public class Main extends Application {
             int sum = 0;
             int numRows = grid.length;
             int numCols = grid[0].length;
-            /* Check the tiles around the current tile for bombs and sum the bomb count */
-            // Top left
-            if (col > 0 && row > 0 && grid[row-1][col-1].isMine()) { sum++; }
-            // Top middle
-            if (row > 0 && grid[row-1][col].isMine()) { sum++; }
-            // Top right
-            if (col < numCols - 1 && row > 0 && grid[row-1][col+1].isMine()) { sum++; }
-            // Right
-            if (col < numCols - 1 && grid[row][col+1].isMine()) { sum++; }
-            // Bottom right
-            if (col < numCols - 1 && row < numRows - 1 && grid[row+1][col+1].isMine()) { sum++; }
-            // Bottom middle
-            if (row < numRows - 1 && grid[row+1][col].isMine()) { sum++; }
-            // Bottom left
-            if (col > 0 && row < numRows - 1 && grid[row+1][col-1].isMine()) { sum++; }
-            // Left
-            if (col > 0 && grid[row][col-1].isMine()) { sum++; }
 
+            /* Check the tiles around the current tile for bombs and sum the bomb count */
+            for (int rowDir = -1; rowDir <= 1; rowDir++){
+                for (int colDir = -1; colDir <= 1; colDir++) {
+                    int newRow = row + rowDir;
+                    int newCol = col + colDir;
+                    if ((newRow >= 0 && newRow < numRows) && (newCol >= 0 && newCol < numCols)) {
+                        if (grid[newRow][newCol].isMine()){
+                            sum++;
+                        }
+                    }
+                }
+            }
             this.val = sum;
         }
 
@@ -420,9 +422,3 @@ public class Main extends Application {
         }
     }
 }
-
-class PlayAreaGP extends GridPane {
-
-}
-
-
