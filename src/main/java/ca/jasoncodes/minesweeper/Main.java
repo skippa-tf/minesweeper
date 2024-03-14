@@ -119,7 +119,6 @@ public class Main extends Application {
         /* Load the fxml file that builds the ui */
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ui.fxml"));
         fxmlLoader.setController(this);
-
         Scene scene = new Scene(fxmlLoader.load());
 
         stage.setWidth(295);
@@ -132,31 +131,9 @@ public class Main extends Application {
         minefieldGPane = new GridPane();
         vBoxForMinefield.getChildren().add(minefieldGPane);
 
-
         reset();
-
     }
 
-    /* Player lost */
-    private void gameOver(int row, int col) {
-        for (Tile[] gridRow : tileGrid){
-            for (Tile t : gridRow) {
-                if (t.isMine()) {
-                    if (!t.isFlagged()) {
-                        t.setGraphic(new ImageView(MINE_GREY));
-                    }
-                } else {
-                    if (t.isFlagged()) {
-                        t.setGraphic(new ImageView(MINE_MISFLAGGED));
-                    }
-                }
-            }
-        }
-
-        tileGrid[row][col].setGraphic(new ImageView(MINE_RED));
-        smileBTN.setGraphic(new ImageView(FACE_DEAD));
-        playing = false;
-    }
     /* Reset the game */
     private void reset() {
         totalFlagged = 0;
@@ -216,8 +193,38 @@ public class Main extends Application {
         return mines2D;
     }
 
+    private void shuffle(boolean[] arr) {
+        Random rand = new Random();
+        for (int i = 0; i < arr.length; i++) {
+            int r = rand.nextInt(i,arr.length);
+            boolean temp = arr[i];
+            arr[i] = arr[r];
+            arr[r] = temp;
+        }
+    }
 
+    /* Uses a Fisher-Yates shuffle to ensure the contents of the array are properly and evenly shuffled. */
+    /* https://www.youtube.com/watch?v=4zx5bM2OcvA helped a lot with this + my amazing prof Jim Nastos :) */
+    private <T> void shuffle(T[] arr) {
+        Random rand = new Random();
+        for (int i = 0; i < arr.length; i++) {
+            int r = rand.nextInt(i,arr.length);
+            T temp = arr[i];
+            arr[i] = arr[r];
+            arr[r] = temp;
+        }
+    }
 
+    /* Converts a one dimensional array to a 2D dimensional array with the specified # of values per row */
+    private boolean[][] convertTo2DArray(boolean[] arr, int numCols) {
+        boolean[][] temp = new boolean[Math.ceilDiv(arr.length, numCols)][numCols];
+        for (int i = 0; i < arr.length; i++) {
+            temp[i/numCols][i%numCols] = arr[i];
+        }
+        return temp;
+    }
+
+    /* Prints a grid of a 2d array to system out */
     private void displayArray(boolean[][] arr) {
         StringBuilder out = new StringBuilder();
         out.append("-".repeat(arr[0].length + 2));
@@ -237,37 +244,69 @@ public class Main extends Application {
         System.out.println(out);
     }
 
-    /* Uses a Fisher-Yates shuffle to ensure the contents of the array are properly and evenly shuffled. */
-    /* https://www.youtube.com/watch?v=4zx5bM2OcvA helped a lot with this + my amazing prof Jim Nastos :) */
-    private <T> void shuffle(T[] arr) {
-        Random rand = new Random();
-        for (int i = 0; i < arr.length; i++) {
-            int r = rand.nextInt(i,arr.length);
-            T temp = arr[i];
-            arr[i] = arr[r];
-            arr[r] = temp;
-        }
+    /* This is a helper method for creating tiles to be added to the grid pane */
+    private Tile makeTile(int col, int row, Tile[][] grid, boolean[][] minefield) {
+        Tile tile = new Tile(col, row, minefield[row][col], grid);
+        tile.setMaxHeight(32);
+        tile.setMaxWidth(32);
+        tile.setGraphic(new ImageView(COVER));
+        tile.setOnMouseClicked((e) ->{
+            System.out.println(e.getSource().toString());
+            if (playing) {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    System.out.println("LEFT");
+                    if (tile.isMine() && !tile.isFlagged()) {
+                        if (firstTurn) {
+                            setupMinefield();
+                        } else {
+                            gameOver(tile.getRow(), tile.getCol());
+                        }
+                    } else if (tile.isHidden()) {
+                        //tile.reveal();
+                        if (tile.reveal()) {
+                            firstTurn = false;
+                        }
+                    }
+                } else if (e.getButton() == MouseButton.SECONDARY) {
+                    System.out.println("RIGHT");
+                    tile.toggleFlag();
+                }
+                checkWin();
+            }
+        });
+        return tile;
     }
 
-    private void shuffle(boolean[] arr) {
-        Random rand = new Random();
-        for (int i = 0; i < arr.length; i++) {
-            int r = rand.nextInt(i,arr.length);
-            boolean temp = arr[i];
-            arr[i] = arr[r];
-            arr[r] = temp;
+    /* Player lost */
+    private void gameOver(int row, int col) {
+        for (Tile[] gridRow : tileGrid){
+            for (Tile t : gridRow) {
+                if (t.isMine()) {
+                    if (!t.isFlagged()) {
+                        t.setGraphic(new ImageView(MINE_GREY));
+                    }
+                } else {
+                    if (t.isFlagged()) {
+                        t.setGraphic(new ImageView(MINE_MISFLAGGED));
+                    }
+                }
+            }
         }
+
+        tileGrid[row][col].setGraphic(new ImageView(MINE_RED));
+        smileBTN.setGraphic(new ImageView(FACE_DEAD));
+        playing = false;
     }
 
-    /* Converts a one dimensional array to a 2D dimensional array with the specified # of values per row */
-    private boolean[][] convertTo2DArray(boolean[] arr, int numCols) {
-        boolean[][] temp = new boolean[Math.ceilDiv(arr.length, numCols)][numCols];
-        for (int i = 0; i < arr.length; i++) {
-            temp[i/numCols][i%numCols] = arr[i];
-        }
-        return temp;
-    }
+    private void checkWin() {
 
+        int revealedTileCount = Tile.getRevealedTileCount();
+
+        if (totalTiles - totalMines == revealedTileCount) {
+            smileBTN.setGraphic(new ImageView(FACE_WIN));
+            playing = false;
+        }
+    }
 
     private void updateBombCounter() {
         int total = totalMines - totalFlagged;
@@ -281,52 +320,9 @@ public class Main extends Application {
         bombCounterOnes.setImage(TIMER_IMAGE_ARRAY[ones]);
     }
 
-    /* This is a helper method for creating tiles to be added to the grid pane */
-    private Tile makeTile(int col, int row, Tile[][] grid, boolean[][] minefield) {
-        Tile tile = new Tile(col, row, minefield[row][col], grid);
-        tile.setMaxHeight(32);
-        tile.setMaxWidth(32);
-        tile.setGraphic(new ImageView(COVER));
-        tile.setOnMouseClicked((e) ->{
-            System.out.println(e.getSource().toString());
-            if (playing) {
-                if (e.getButton() == MouseButton.PRIMARY) {
-                    System.out.println("LEFT");
-                    if (tile.isMine()) {
-                        if (firstTurn) {
-                            setupMinefield();
-                        } else {
-                            gameOver(tile.getRow(), tile.getCol());
-                        }
-                    } else if (!tile.isRevealed()) {
-                        tile.reveal();
-                        firstTurn = false;
-                    }
-                } else if (e.getButton() == MouseButton.SECONDARY) {
-                    System.out.println("RIGHT");
-                    tile.toggleFlag();
-                }
-                checkWin();
-            }
-        });
-        return tile;
-    }
-
-    private void checkWin() {
-
-        int revealedTileCount = Tile.getRevealedTileCount();
-
-        if (totalTiles - totalMines == revealedTileCount) {
-            smileBTN.setGraphic(new ImageView(FACE_WIN));
-            playing = false;
-        }
-    }
-
-
     public static void main(String[] args) {
         launch();
     }
-
 
     /* Mostly adopted from lecture code */
     class Tile extends Button {
@@ -343,7 +339,7 @@ public class Main extends Application {
         public int getCol() { return col; }
         public int getRow() { return row; }
         public int getVal() { return val; }
-        public boolean isRevealed() { return revealed; }
+        public boolean isHidden() { return !revealed; }
         public boolean isFlagged() { return flagged; }
         public boolean isMine() { return mine; }
         public static int getRevealedTileCount() { return revealedTileCount; }
@@ -390,17 +386,18 @@ public class Main extends Application {
 
 
         /* This method "reveals" the tile and sets the image to the correct value */
-        public void reveal(){
+        public boolean reveal(){
             if (!isFlagged()) {
                 revealedTileCount++;
                 //System.out.println("Revealed Tile Count: " + revealedTileCount);
                 revealed = true;
                 this.setGraphic(new ImageView(VAL_IMAGE_ARRAY[this.getVal()]));
             }
+            return revealed;
         }
 
         public void toggleFlag() {
-            if (!isRevealed()) {
+            if (isHidden()) {
                 if (!isFlagged()) {
                     totalFlagged++;
                     flagged = true;
@@ -413,7 +410,6 @@ public class Main extends Application {
             }
             updateBombCounter();
         }
-
 
         public static void reset() {
             revealedTileCount = 0;
