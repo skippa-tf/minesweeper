@@ -303,6 +303,10 @@ public class Main extends Application {
     private void recursiveReveal(int row, int col, Tile[][] grid) {
         int numRows = grid.length;
         int numCols = grid[0].length;
+        Tile tile = grid[row][col];
+        if (!tile.isMine() && !tile.isFlagged()) {
+            tile.reveal();
+        }
 
         //System.out.println("recursive reveal on: " + tile);
 
@@ -413,7 +417,7 @@ public class Main extends Application {
 
         /* This method "reveals" the tile and sets the image to the correct value */
         public boolean reveal(){
-            if (!isFlagged()) {
+            if (!isFlagged() && isHidden()) {
                 revealedTileCount++;
                 //System.out.println("Revealed Tile Count: " + revealedTileCount);
                 revealed = true;
