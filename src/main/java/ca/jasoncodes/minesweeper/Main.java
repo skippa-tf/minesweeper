@@ -268,6 +268,8 @@ public class Main extends Application {
                             tile.reveal();
                         }
                         firstTurn = false;
+                    } else if (!tile.isHidden()) {
+                        safeRevealWithFlags(row, col, grid);
                     }
                 } else if (e.getButton() == MouseButton.SECONDARY) {
                     System.out.println("RIGHT");
@@ -300,6 +302,7 @@ public class Main extends Application {
         playing = false;
     }
 
+    /* Player hit a 0 tile, causing tiles to be automatically revealed around it. */
     private void recursiveReveal(int row, int col, Tile[][] grid) {
         int numRows = grid.length;
         int numCols = grid[0].length;
@@ -330,6 +333,51 @@ public class Main extends Application {
                     }
                 }
             }
+        }
+    }
+
+    private void safeRevealWithFlags(int row, int col, Tile[][] grid) {
+        Tile currentT = grid[row][col];
+        int numBombsAroundTile = currentT.getVal();
+        int correctFlags = 0;
+        ArrayList<Tile> tilesAroundMiddle = new ArrayList<>();
+
+        for (int rowDir = -1; rowDir <= 1; rowDir++) {
+            for (int colDir = -1; colDir <= 1; colDir++) {
+                if (rowDir == 0 && colDir == 0 ){
+                    continue;
+                }
+                int newRow = row + rowDir;
+                int newCol = col + colDir;
+                if ((newRow >= 0 && newRow < numRows) && (newCol >= 0 && newCol < numCols)) {
+                    Tile newTile = grid[newRow][newCol];
+                    if (newTile.isFlagged() && newTile.isMine()) {
+                        correctFlags += 1; // Update the counter if the tile is flagged and there is a mine underneath.
+                    } else {
+                        if (newTile.isFlagged()) {
+                            gameOver(newRow, newCol);
+                        } else {
+                            tilesAroundMiddle.add(newTile);
+                        }
+                    }
+                }
+            }
+        }
+
+        /* Only do a "chord" if all mines are correctly flagged */
+        if (correctFlags == numBombsAroundTile) {
+            for (Tile t : tilesAroundMiddle) {
+                reveal(t, grid);
+            }
+        }
+    }
+
+    /* This helper method decided on using the recursive reveal, or a regular reveal */
+    private void reveal(Tile t, Tile[][] grid) {
+        if (t.getVal() == 0) {
+            recursiveReveal(t.getRow(), t.getCol(), grid);
+        } else {
+            t.reveal();
         }
     }
 
