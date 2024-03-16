@@ -10,7 +10,9 @@
 - 
 - Bind components to the right width properties so that things get resized correctly.
 - Refactor code that passes row, col, and a grid to just pass a tile + give tiles a reference to the grid.
-** double check every minesweeper requirement!**
+
+- Rare crash happens, unknown conditions.
+- ** double check every minesweeper requirement!**
 --------
 ## If Time Permits:
 - Create a play area class that manages the minefield gridpane and minefield logic.

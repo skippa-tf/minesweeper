@@ -174,7 +174,7 @@ public class Main extends Application {
         /* Once the grid is instantiated, set the vals for each tile */
         for (Tile[] tRow : tileGrid)
             for (Tile t : tRow) {
-                t.setVal(tileGrid);
+                t.setVal();
             }
     }
 
@@ -256,9 +256,9 @@ public class Main extends Application {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     System.out.println("LEFT");
                     if (!tile.isHidden()) {
-                        safeRevealWithFlags(tile.getRow(), tile.getCol(), grid);
+                        safeRevealWithFlags(tile);
                     } else {
-                        reveal(tile, grid);
+                        reveal(tile);
                     }
                 } else if (e.getButton() == MouseButton.SECONDARY) {
                     System.out.println("RIGHT");
@@ -292,10 +292,12 @@ public class Main extends Application {
     }
 
     /* Player hit a 0 tile, causing tiles to be automatically revealed around it. */
-    private void recursiveReveal(int row, int col, Tile[][] grid) {
+    private void recursiveReveal(Tile tile) {
+        Tile[][] grid = tile.getGrid();
+        int row = tile.getRow();
+        int col = tile.getCol();
         int numRows = grid.length;
         int numCols = grid[0].length;
-        Tile tile = grid[row][col];
         if (!tile.isMine() && !tile.isFlagged()) {
             tile.reveal();
         }
@@ -312,14 +314,16 @@ public class Main extends Application {
                 int newCol = col + colDir;
                 if ((newRow >= 0 && newRow < numRows) && (newCol >= 0 && newCol < numCols)) {
                     Tile newTile = grid[newRow][newCol];
-                    reveal(newTile, grid);
+                    reveal(newTile);
                 }
             }
         }
     }
 
-    private void safeRevealWithFlags(int row, int col, Tile[][] grid) {
-        Tile currentT = grid[row][col];
+    private void safeRevealWithFlags(Tile currentT) {
+        Tile[][] grid = currentT.getGrid();
+        int row = currentT.getRow();
+        int col = currentT.getCol();
         int numBombsAroundTile = currentT.getVal();
         int correctFlags = 0;
         ArrayList<Tile> tilesAroundMiddle = new ArrayList<>();
@@ -348,16 +352,17 @@ public class Main extends Application {
 
         /* Only do a "chord" if all mines are correctly flagged */
         if (correctFlags == numBombsAroundTile) {
-            for (Tile t : tilesAroundMiddle) {
-                reveal(t, grid);
+            for (Tile tile : tilesAroundMiddle) {
+                reveal(tile);
             }
         }
     }
 
     /* This helper method that decides what reveal method to use. */
-    private void reveal(Tile tile, Tile[][] grid) {
+    private void reveal(Tile tile) {
+        Tile[][] grid = tile.getGrid();
         if (tile.getVal() == 0 && tile.isHidden()) {
-            recursiveReveal(tile.getRow(), tile.getCol(), grid);
+            recursiveReveal(tile);
         } else {
             tile.reveal();
         }
@@ -397,6 +402,7 @@ public class Main extends Application {
         private final int col;
         private final int row;
         private final boolean mine;
+        private Tile[][] grid;
 
         private int val;
         private boolean revealed;
@@ -405,6 +411,7 @@ public class Main extends Application {
         public int getCol() { return col; }
         public int getRow() { return row; }
         public int getVal() { return val; }
+        public Tile[][] getGrid() { return grid; }
         public boolean isHidden() { return !revealed; }
         public boolean isFlagged() { return flagged; }
         public boolean isMine() { return mine; }
@@ -416,14 +423,15 @@ public class Main extends Application {
             this.col = col;
             this.row = row;
             this.mine = mine;
-
+            this.grid = grid;
             setPadding(Insets.EMPTY);
+            this.setFocusTraversable(false);
             //System.out.println("Tile count: " + tileCount + "\nBomb count: " + bombCount);
         }
 
 
         /* This method checks the tiles around this tile and sets its value to the bomb count */
-        public void setVal(Tile[][] grid) {
+        public void setVal() {
             int row = this.getRow();
             int col = this.getCol();
             int sum = 0;
