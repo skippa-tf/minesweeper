@@ -90,6 +90,7 @@ public class Main extends Application {
     private int totalFlagged;
     private int totalTiles = numRows * numCols;
     private Tile[][] tileGrid;
+    private boolean[][] minefield;
     private boolean firstTurn = true;
 
     private boolean playing = true;
@@ -140,7 +141,7 @@ public class Main extends Application {
         setupSmileBTN();
         setupMinefield();
         updateBombCounter();
-        Tile.reset();
+        Tile.resetTiles();
     }
 
     /* This method sets up the smileBTN with the appropriate behaviour */
@@ -159,13 +160,13 @@ public class Main extends Application {
 
     /* This method is responsible for setting up the minefield and its grid pane; */
     private void setupMinefield(){
-        boolean[][] minefield = generateRandomMinefield(numRows, numCols);
+        randomizeMinefield(numRows, numCols);
         firstTurn = true;
         /* Set up the grid of tiles and add them to the GridPane */
         tileGrid = new Tile[numRows][numCols];
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
-                Tile tile = makeTile(col, row, tileGrid, minefield);
+                Tile tile = makeTile(col, row);
                 tile.setPadding(Insets.EMPTY);
                 minefieldGPane.add(tile, col, row);
                 tileGrid[row][col] = tile;
@@ -179,7 +180,7 @@ public class Main extends Application {
     }
 
     /* This method is responsible for randomizing bomb location */
-    private boolean[][] generateRandomMinefield(int rows, int cols){
+    private void randomizeMinefield(int rows, int cols){
         // Generate a boolean array of totalSquares size and then shuffle the array
         int totalTiles = rows * cols;
         boolean[] mines = new boolean[totalTiles];
@@ -190,7 +191,7 @@ public class Main extends Application {
         shuffle(mines);
         boolean[][] mines2D = convertTo2DArray(mines, numCols);
         displayArray(mines2D);
-        return mines2D;
+        minefield = mines2D;
     }
 
     private void shuffle(boolean[] arr) {
@@ -245,8 +246,8 @@ public class Main extends Application {
     }
 
     /* This is a helper method for creating tiles to be added to the grid pane */
-    private Tile makeTile(int col, int row, Tile[][] grid, boolean[][] minefield) {
-        Tile tile = new Tile(col, row, minefield[row][col], grid);
+    private Tile makeTile(int col, int row) {
+        Tile tile = new Tile(col, row, minefield[row][col]);
         tile.setMaxHeight(32);
         tile.setMaxWidth(32);
         tile.setGraphic(new ImageView(COVER));
@@ -293,11 +294,8 @@ public class Main extends Application {
 
     /* Player hit a 0 tile, causing tiles to be automatically revealed around it. */
     private void recursiveReveal(Tile tile) {
-        Tile[][] grid = tile.getGrid();
         int row = tile.getRow();
         int col = tile.getCol();
-        int numRows = grid.length;
-        int numCols = grid[0].length;
         if (!tile.isMine() && !tile.isFlagged()) {
             tile.reveal();
         }
@@ -313,7 +311,7 @@ public class Main extends Application {
                 int newRow = row + rowDir;
                 int newCol = col + colDir;
                 if ((newRow >= 0 && newRow < numRows) && (newCol >= 0 && newCol < numCols)) {
-                    Tile newTile = grid[newRow][newCol];
+                    Tile newTile = tileGrid[newRow][newCol];
                     reveal(newTile);
                 }
             }
@@ -321,7 +319,6 @@ public class Main extends Application {
     }
 
     private void safeRevealWithFlags(Tile currentT) {
-        Tile[][] grid = currentT.getGrid();
         int row = currentT.getRow();
         int col = currentT.getCol();
         int numBombsAroundTile = currentT.getVal();
@@ -336,7 +333,7 @@ public class Main extends Application {
                 int newRow = row + rowDir;
                 int newCol = col + colDir;
                 if ((newRow >= 0 && newRow < numRows) && (newCol >= 0 && newCol < numCols)) {
-                    Tile newTile = grid[newRow][newCol];
+                    Tile newTile = tileGrid[newRow][newCol];
                     if (newTile.isFlagged() && newTile.isMine()) {
                         correctFlags += 1; // Update the counter if the tile is flagged and there is a mine underneath.
                     } else {
@@ -419,11 +416,11 @@ public class Main extends Application {
 
 
 
-        public Tile(int col, int row, boolean mine, Tile[][] grid) {
+        public Tile(int col, int row, boolean mine) {
             this.col = col;
             this.row = row;
             this.mine = mine;
-            this.grid = grid;
+
             setPadding(Insets.EMPTY);
             this.setFocusTraversable(false);
             //System.out.println("Tile count: " + tileCount + "\nBomb count: " + bombCount);
@@ -435,8 +432,6 @@ public class Main extends Application {
             int row = this.getRow();
             int col = this.getCol();
             int sum = 0;
-            int numRows = grid.length;
-            int numCols = grid[0].length;
 
             /* Check the tiles around the current tile for bombs and sum the bomb count */
             for (int rowDir = -1; rowDir <= 1; rowDir++){
@@ -444,7 +439,7 @@ public class Main extends Application {
                     int newRow = row + rowDir;
                     int newCol = col + colDir;
                     if ((newRow >= 0 && newRow < numRows) && (newCol >= 0 && newCol < numCols)) {
-                        if (grid[newRow][newCol].isMine()){
+                        if (tileGrid[newRow][newCol].isMine()){
                             sum++;
                         }
                     }
@@ -459,7 +454,7 @@ public class Main extends Application {
             if (!isFlagged() && isHidden()) {
                 if (isMine()) {
                     if (firstTurn) {
-                        setupMinefield();
+                       reset();
                     } else {
                         gameOver(row, col);
                     }
@@ -488,7 +483,7 @@ public class Main extends Application {
             updateBombCounter();
         }
 
-        public static void reset() {
+        public static void resetTiles() {
             revealedTileCount = 0;
         }
 
