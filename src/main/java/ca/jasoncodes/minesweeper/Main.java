@@ -158,18 +158,28 @@ public class Main extends Application {
         }));
     }
 
-    /* This method is responsible for setting up the minefield and its grid pane; */
-    private void setupMinefield(){
-        randomizeMinefield(numRows, numCols);
-        firstTurn = true;
+    private void setupMinefield() {
+        setupMinefield(null);
+    }
+
+    /* This method is responsible for setting up the minefield and its grid pane. If it is called by a tile, it will make a safe board. */
+    private void setupMinefield(Tile tile){
+        if (null != tile) {
+            do {
+                randomizeMinefield();
+                tile.setVal();
+            } while (tile.getVal() > 0);
+        } else {
+            randomizeMinefield();
+        }
         /* Set up the grid of tiles and add them to the GridPane */
         tileGrid = new Tile[numRows][numCols];
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
-                Tile tile = makeTile(col, row);
-                tile.setPadding(Insets.EMPTY);
-                minefieldGPane.add(tile, col, row);
-                tileGrid[row][col] = tile;
+                Tile newTile = makeTile(col, row);
+                newTile.setPadding(Insets.EMPTY);
+                minefieldGPane.add(newTile, col, row);
+                tileGrid[row][col] = newTile;
             }
         }
         /* Once the grid is instantiated, set the vals for each tile */
@@ -180,9 +190,9 @@ public class Main extends Application {
     }
 
     /* This method is responsible for randomizing bomb location */
-    private void randomizeMinefield(int rows, int cols){
-        // Generate a boolean array of totalSquares size and then shuffle the array
-        int totalTiles = rows * cols;
+    private void randomizeMinefield(){
+        // Generate a boolean array of totalTiles size and then shuffle the array
+        firstTurn = true;
         boolean[] mines = new boolean[totalTiles];
         for (int i = 0; i < totalTiles; i++) {
             mines[i] = i < totalMines;
@@ -357,7 +367,6 @@ public class Main extends Application {
 
     /* This helper method that decides what reveal method to use. */
     private void reveal(Tile tile) {
-        Tile[][] grid = tile.getGrid();
         if (tile.getVal() == 0 && tile.isHidden()) {
             recursiveReveal(tile);
         } else {
@@ -399,7 +408,6 @@ public class Main extends Application {
         private final int col;
         private final int row;
         private final boolean mine;
-        private Tile[][] grid;
 
         private int val;
         private boolean revealed;
@@ -408,7 +416,7 @@ public class Main extends Application {
         public int getCol() { return col; }
         public int getRow() { return row; }
         public int getVal() { return val; }
-        public Tile[][] getGrid() { return grid; }
+
         public boolean isHidden() { return !revealed; }
         public boolean isFlagged() { return flagged; }
         public boolean isMine() { return mine; }
@@ -439,7 +447,7 @@ public class Main extends Application {
                     int newRow = row + rowDir;
                     int newCol = col + colDir;
                     if ((newRow >= 0 && newRow < numRows) && (newCol >= 0 && newCol < numCols)) {
-                        if (tileGrid[newRow][newCol].isMine()){
+                        if (minefield[newRow][newCol]){
                             sum++;
                         }
                     }
@@ -454,7 +462,7 @@ public class Main extends Application {
             if (!isFlagged() && isHidden()) {
                 if (isMine()) {
                     if (firstTurn) {
-                       reset();
+                       setupMinefield(this);
                     } else {
                         gameOver(row, col);
                     }
