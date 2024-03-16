@@ -274,7 +274,9 @@ public class Main extends Application {
                     }
                 } else if (e.getButton() == MouseButton.SECONDARY) {
                     System.out.println("RIGHT");
-                    tile.toggleFlag();
+                    if (!firstTurn) {
+                        tile.toggleFlag();
+                    }
                 }
                 checkWin();
             }
