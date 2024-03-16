@@ -88,12 +88,11 @@ public class Main extends Application {
     private int numCols = beginnerNumCols;
     private int totalMines = beginnerMineCount;
     private int totalFlagged;
-    private int totalTiles = numRows * numCols;
+    private int totalTiles;
     private Tile[][] tileGrid;
     private boolean[][] minefield;
-    private boolean firstTurn = true;
-
-    private boolean playing = true;
+    private boolean firstTurn;
+    private boolean playing;
     /* These controls get injected (and instantiated) via the FXMLLoader. */
     @FXML
     private HBox smileHBox;
@@ -137,9 +136,13 @@ public class Main extends Application {
 
     /* Reset the game */
     private void reset() {
+        firstTurn = true;
+        playing = true;
         totalFlagged = 0;
+        totalTiles = numRows * numCols;
+        minefield = new boolean[numRows][numCols];
         setupSmileBTN();
-        setupMinefield();
+        setupTilegrid();
         updateBombCounter();
         Tile.resetTiles();
     }
@@ -158,30 +161,28 @@ public class Main extends Application {
         }));
     }
 
-    private void setupMinefield() {
-        setupMinefield(null);
-    }
-
-    /* This method is responsible for setting up the minefield and its grid pane. If it is called by a tile, it will make a safe board. */
-    private void setupMinefield(Tile tile){
-        if (null != tile) {
-            do {
-                randomizeMinefield();
-                tile.setVal();
-            } while (tile.getVal() > 0);
-        } else {
-            randomizeMinefield();
-        }
+    /* Create a grid of tiles without any mines */
+    private void setupTilegrid() {
         /* Set up the grid of tiles and add them to the GridPane */
+        minefieldGPane.getChildren().clear();
         tileGrid = new Tile[numRows][numCols];
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
                 Tile newTile = makeTile(col, row);
-                newTile.setPadding(Insets.EMPTY);
                 minefieldGPane.add(newTile, col, row);
                 tileGrid[row][col] = newTile;
             }
         }
+    }
+
+    /* This method gets called once the user takes their first turn */
+    private void setupMinefield(Tile tile){
+        firstTurn = false;
+        do {
+            randomizeMinefield();
+            tile.setVal();
+        } while (tile.getVal() > 0);
+
         /* Once the grid is instantiated, set the vals for each tile */
         for (Tile[] tRow : tileGrid)
             for (Tile t : tRow) {
@@ -282,24 +283,29 @@ public class Main extends Application {
     }
 
     /* Player lost */
-    private void gameOver(int row, int col) {
-        for (Tile[] gridRow : tileGrid){
-            for (Tile t : gridRow) {
-                if (t.isMine()) {
-                    if (!t.isFlagged()) {
-                        t.setGraphic(new ImageView(MINE_GREY));
-                    }
-                } else {
-                    if (t.isFlagged()) {
-                        t.setGraphic(new ImageView(MINE_MISFLAGGED));
+    private void gameOver(Tile tile) {
+        if (!firstTurn) {
+            int row = tile.getRow();
+            int col = tile.getCol();
+            for (Tile[] gridRow : tileGrid) {
+                for (Tile t : gridRow) {
+                    if (t.isMine()) {
+                        if(tile.getRow() == t.getRow() && tile.getCol() == t.getCol()){
+                            t.setGraphic(new ImageView(MINE_RED));
+                        } else if (!t.isFlagged()) {
+                            t.setGraphic(new ImageView(MINE_GREY));
+                        }
+                    } else {
+                        if (t.isFlagged()) {
+                            t.setGraphic(new ImageView(MINE_MISFLAGGED));
+                        }
                     }
                 }
             }
-        }
 
-        tileGrid[row][col].setGraphic(new ImageView(MINE_RED));
-        smileBTN.setGraphic(new ImageView(FACE_DEAD));
-        playing = false;
+            smileBTN.setGraphic(new ImageView(FACE_DEAD));
+            playing = false;
+        }
     }
 
     /* Player hit a 0 tile, causing tiles to be automatically revealed around it. */
@@ -348,7 +354,7 @@ public class Main extends Application {
                         correctFlags += 1; // Update the counter if the tile is flagged and there is a mine underneath.
                     } else {
                         if (newTile.isFlagged()) {
-                            gameOver(newRow, newCol);
+                            gameOver(currentT);
                         } else {
                             tilesAroundMiddle.add(newTile);
                         }
@@ -372,14 +378,11 @@ public class Main extends Application {
         } else {
             tile.reveal();
         }
-        firstTurn = false;
     }
 
     private void checkWin() {
-
-        int revealedTileCount = Tile.getRevealedTileCount();
-
-        if (totalTiles - totalMines == revealedTileCount) {
+        System.out.println(totalTiles + " - " + totalMines + " = " + Tile.getRevealedTileCount());
+        if (totalTiles - totalMines == Tile.getRevealedTileCount()) {
             smileBTN.setGraphic(new ImageView(FACE_WIN));
             playing = false;
         }
@@ -407,11 +410,12 @@ public class Main extends Application {
 
         private final int col;
         private final int row;
-        private final boolean mine;
+
 
         private int val;
         private boolean revealed;
         private boolean flagged;
+        private boolean mine;
 
         public int getCol() { return col; }
         public int getRow() { return row; }
@@ -439,6 +443,7 @@ public class Main extends Application {
         public void setVal() {
             int row = this.getRow();
             int col = this.getCol();
+            this.mine = minefield[row][col];
             int sum = 0;
 
             /* Check the tiles around the current tile for bombs and sum the bomb count */
@@ -458,14 +463,13 @@ public class Main extends Application {
 
 
         /* This method "reveals" the tile and sets the image to the correct value */
-        public boolean reveal(){
+        public void reveal(){
             if (!isFlagged() && isHidden()) {
-                if (isMine()) {
-                    if (firstTurn) {
-                       setupMinefield(this);
-                    } else {
-                        gameOver(row, col);
-                    }
+                if (firstTurn) {
+                    reset();
+                    setupMinefield(this);
+                } else if(isMine()){
+                    gameOver(this);
                 } else {
                     revealedTileCount++;
                     //System.out.println("Revealed Tile Count: " + revealedTileCount);
@@ -473,7 +477,7 @@ public class Main extends Application {
                     this.setGraphic(new ImageView(VAL_IMAGE_ARRAY[this.getVal()]));
                 }
             }
-            return revealed;
+            firstTurn = false;
         }
 
         public void toggleFlag() {
