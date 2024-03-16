@@ -9,7 +9,7 @@
 - When the game is over, after a win or loss, the only clickable button is the face button.
 - 
 - Bind components to the right width properties so that things get resized correctly.
-
+- Refactor code that passes row, col, and a grid to just pass a tile + give tiles a reference to the grid.
 ** double check every minesweeper requirement!**
 --------
 ## If Time Permits:

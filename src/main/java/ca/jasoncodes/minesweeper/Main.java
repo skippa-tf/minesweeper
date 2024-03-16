@@ -255,21 +255,10 @@ public class Main extends Application {
             if (playing) {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     System.out.println("LEFT");
-                    if (tile.isMine() && !tile.isFlagged()) {
-                        if (firstTurn) {
-                            setupMinefield();
-                        } else {
-                            gameOver(tile.getRow(), tile.getCol());
-                        }
-                    } else if (tile.isHidden()) {
-                        if (tile.getVal() == 0){
-                            recursiveReveal(row, col, grid);
-                        } else {
-                            tile.reveal();
-                        }
-                        firstTurn = false;
-                    } else if (!tile.isHidden()) {
-                        safeRevealWithFlags(row, col, grid);
+                    if (!tile.isHidden()) {
+                        safeRevealWithFlags(tile.getRow(), tile.getCol(), grid);
+                    } else {
+                        reveal(tile, grid);
                     }
                 } else if (e.getButton() == MouseButton.SECONDARY) {
                     System.out.println("RIGHT");
@@ -323,14 +312,7 @@ public class Main extends Application {
                 int newCol = col + colDir;
                 if ((newRow >= 0 && newRow < numRows) && (newCol >= 0 && newCol < numCols)) {
                     Tile newTile = grid[newRow][newCol];
-                    if (newTile.getVal() == 0){
-                        if (!newTile.isMine() && newTile.isHidden()) {
-                            newTile.reveal();
-                            recursiveReveal(newRow, newCol, grid);
-                        }
-                    } else {
-                        newTile.reveal();
-                    }
+                    reveal(newTile, grid);
                 }
             }
         }
@@ -372,13 +354,14 @@ public class Main extends Application {
         }
     }
 
-    /* This helper method decided on using the recursive reveal, or a regular reveal */
-    private void reveal(Tile t, Tile[][] grid) {
-        if (t.getVal() == 0) {
-            recursiveReveal(t.getRow(), t.getCol(), grid);
+    /* This helper method that decides what reveal method to use. */
+    private void reveal(Tile tile, Tile[][] grid) {
+        if (tile.getVal() == 0 && tile.isHidden()) {
+            recursiveReveal(tile.getRow(), tile.getCol(), grid);
         } else {
-            t.reveal();
+            tile.reveal();
         }
+        firstTurn = false;
     }
 
     private void checkWin() {
@@ -466,10 +449,18 @@ public class Main extends Application {
         /* This method "reveals" the tile and sets the image to the correct value */
         public boolean reveal(){
             if (!isFlagged() && isHidden()) {
-                revealedTileCount++;
-                //System.out.println("Revealed Tile Count: " + revealedTileCount);
-                revealed = true;
-                this.setGraphic(new ImageView(VAL_IMAGE_ARRAY[this.getVal()]));
+                if (isMine()) {
+                    if (firstTurn) {
+                        setupMinefield();
+                    } else {
+                        gameOver(row, col);
+                    }
+                } else {
+                    revealedTileCount++;
+                    //System.out.println("Revealed Tile Count: " + revealedTileCount);
+                    revealed = true;
+                    this.setGraphic(new ImageView(VAL_IMAGE_ARRAY[this.getVal()]));
+                }
             }
             return revealed;
         }
