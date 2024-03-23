@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -72,27 +73,35 @@ public class Main extends Application {
     private final int beginnerMineCount = 10;
     private final int beginnerNumRows = 8;
     private final int beginnerNumCols = 8;
+    private final int beginnerWidth = 295;
+    private final int beginnerHeight = 415;
 
     /* Intermediate */
     private final int intermediateMineCount = 40;
     private final int intermediateNumRows = 16;
     private final int intermediateNumCols = 16;
+    private final int intermediateWidth = 552;
+    private final int intermediateHeight = 672;
 
     /* Expert */
     private final int expertMineCount = 99;
     private final int expertNumRows = 16;
     private final int expertNumCols = 32;
+    private final int expertWidth = 1063;
+    private final int expertHeight = 672;
 
     /* Game Vars */
     private int numRows = beginnerNumRows;
     private int numCols = beginnerNumCols;
-    private int totalMines = beginnerMineCount;
+    private int numMines = beginnerMineCount;
     private int totalFlagged;
     private int totalTiles;
     private Tile[][] tileGrid;
     private boolean[][] minefield;
     private boolean firstTurn;
     private boolean playing;
+
+    private Stage stage;
     /* These controls get injected (and instantiated) via the FXMLLoader. */
     @FXML
     private HBox smileHBox;
@@ -112,7 +121,12 @@ public class Main extends Application {
     private ImageView bombCounterTens;
     @FXML
     private ImageView bombCounterOnes;
-
+    @FXML
+    private MenuItem beginnerMenuItem;
+    @FXML
+    private MenuItem intermediateMenuItem;
+    @FXML
+    private MenuItem expertMenuItem;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -120,9 +134,9 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ui.fxml"));
         fxmlLoader.setController(this);
         Scene scene = new Scene(fxmlLoader.load());
-
-        stage.setWidth(295);
-        stage.setHeight(415);
+        this.stage = stage;
+        stage.setWidth(beginnerWidth);
+        stage.setHeight(beginnerHeight);
         stage.setTitle("Minesweeper");
         stage.setScene(scene);
         stage.show();
@@ -142,9 +156,40 @@ public class Main extends Application {
         totalTiles = numRows * numCols;
         minefield = new boolean[numRows][numCols];
         setupSmileBTN();
+        setupMenuItems();
         setupTilegrid();
         updateBombCounter();
         Tile.resetTiles();
+    }
+
+    private void setupMenuItems() {
+        beginnerMenuItem.setOnAction ((mouseEvent -> {
+            System.out.println(mouseEvent.getSource().toString());
+            numRows = beginnerNumRows;
+            numCols = beginnerNumCols;
+            numMines = beginnerMineCount;
+            stage.setHeight(beginnerHeight);
+            stage.setWidth(beginnerWidth);
+            reset();
+        }));
+        intermediateMenuItem.setOnAction ((mouseEvent -> {
+            System.out.println(mouseEvent.getSource().toString());
+            numRows = intermediateNumRows;
+            numCols = intermediateNumCols;
+            numMines = intermediateMineCount;
+            stage.setHeight(intermediateHeight);
+            stage.setWidth(intermediateWidth);
+            reset();
+        }));
+        expertMenuItem.setOnAction ((mouseEvent -> {
+            System.out.println(mouseEvent.getSource().toString());
+            numRows = expertNumRows;
+            numCols = expertNumCols;
+            numMines = expertMineCount;
+            stage.setHeight(expertHeight);
+            stage.setWidth(expertWidth);
+            reset();
+        }));
     }
 
     /* This method sets up the smileBTN with the appropriate behaviour */
@@ -154,7 +199,6 @@ public class Main extends Application {
         smileBTN.setOnMouseClicked((mouseEvent -> {
             System.out.println(mouseEvent.getSource().toString());
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                playing = true;
                 System.out.println("LEFT");
                 reset();
             }
@@ -196,7 +240,7 @@ public class Main extends Application {
         firstTurn = true;
         boolean[] mines = new boolean[totalTiles];
         for (int i = 0; i < totalTiles; i++) {
-            mines[i] = i < totalMines;
+            mines[i] = i < numMines;
         }
 
         shuffle(mines);
@@ -383,15 +427,15 @@ public class Main extends Application {
     }
 
     private void checkWin() {
-        System.out.println(totalTiles + " - " + totalMines + " = " + Tile.getRevealedTileCount());
-        if (totalTiles - totalMines == Tile.getRevealedTileCount()) {
+        System.out.println(totalTiles + " - " + numMines + " = " + Tile.getRevealedTileCount());
+        if (totalTiles - numMines == Tile.getRevealedTileCount()) {
             smileBTN.setGraphic(new ImageView(FACE_WIN));
             playing = false;
         }
     }
 
     private void updateBombCounter() {
-        int total = totalMines - totalFlagged;
+        int total = numMines - totalFlagged;
 
         int hundreds = total / 100;
         int tens = (total % 100) / 10;

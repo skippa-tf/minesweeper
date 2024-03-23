@@ -48,9 +48,9 @@
       <menus>
         <Menu mnemonicParsing="false" style="-fx-padding: 2 0 2 2;" text="Game">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Beginner" />
-                  <MenuItem mnemonicParsing="false" text="Intermediate" />
-                  <MenuItem mnemonicParsing="false" text="Expert" />
+                  <MenuItem fx:id="beginnerMenuItem" mnemonicParsing="false" text="Beginner" />
+                  <MenuItem fx:id="intermediateMenuItem" mnemonicParsing="false" text="Intermediate" />
+                  <MenuItem fx:id="expertMenuItem" mnemonicParsing="false" text="Expert" />
                </items>
         </Menu>
       </menus>
