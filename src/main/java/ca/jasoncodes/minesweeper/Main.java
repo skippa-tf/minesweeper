@@ -53,6 +53,7 @@ public class Main extends Application {
     private final Image FACE_DEAD = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/face-dead.png")));
     private final Image FACE_SMILE = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/face-smile.png")));
     private final Image FACE_WIN = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/face-win.png")));
+    private final Image FACE_O = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/face-o.png")));
     private final Image FLAG = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/flag.png")));
     private final Image MINE_RED = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mine-red.png")));
     private final Image MINE_GREY = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mine-grey.png")));
@@ -203,6 +204,7 @@ public class Main extends Application {
                 reset();
             }
         }));
+
     }
 
     /* Create a grid of tiles without any mines */
@@ -323,6 +325,23 @@ public class Main extends Application {
                     }
                 }
                 checkWin();
+            }
+        });
+        /* Turn O-Face when holding left click */
+        tile.setOnMousePressed(mouseEvent -> {
+            System.out.println(mouseEvent.getSource().toString());
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                if (playing && tile.isHidden() && !tile.isFlagged()) {
+                    smileBTN.setGraphic(new ImageView(FACE_O));
+                }
+            }
+        });
+        tile.setOnMouseReleased(mouseEvent -> {
+            System.out.println(mouseEvent.getSource().toString());
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                if (playing && tile.isHidden() && !tile.isFlagged()) {
+                    smileBTN.setGraphic(new ImageView(FACE_SMILE));
+                }
             }
         });
         return tile;
