@@ -101,6 +101,8 @@ public class Main extends Application {
     private boolean[][] minefield;
     private boolean firstTurn;
     private boolean playing;
+    private Timer timer;
+    private long systemTime;
 
     private Stage stage;
     /* These controls get injected (and instantiated) via the FXMLLoader. */
@@ -122,6 +124,12 @@ public class Main extends Application {
     private ImageView bombCounterTens;
     @FXML
     private ImageView bombCounterOnes;
+    @FXML
+    private ImageView timerHundreds;
+    @FXML
+    private ImageView timerTens;
+    @FXML
+    private ImageView timerOnes;
     @FXML
     private MenuItem beginnerMenuItem;
     @FXML
@@ -146,11 +154,16 @@ public class Main extends Application {
         minefieldGPane = new GridPane();
         vBoxForMinefield.getChildren().add(minefieldGPane);
 
+        timer = new Timer();
+        setupTimer();
         reset();
     }
 
     /* Reset the game */
     private void reset() {
+
+        systemTime = System.currentTimeMillis();
+
         firstTurn = true;
         playing = true;
         totalFlagged = 0;
@@ -161,6 +174,34 @@ public class Main extends Application {
         setupTilegrid();
         updateBombCounter();
         Tile.resetTiles();
+    }
+
+    private void stopTimer() {
+        if (playing && !firstTurn){
+            timer.cancel();
+            timer.purge();
+        }
+    }
+
+    // Source: https://stackoverflow.com/questions/9413656/how-to-use-timer-class-to-call-a-method-do-something-reset-timer-repeat
+    private void setupTimer() {
+        final long pastSystemTime = systemTime;
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                long timeElapsed = (System.currentTimeMillis() - pastSystemTime)/1000;
+
+                int hundreds = (int) (timeElapsed / 1000);
+                hundreds = Math.min(hundreds, 9);
+                int tens = (int) ((timeElapsed % 100) / 10);
+                int ones = (int) ((timeElapsed % 100) % 10);
+
+                System.out.println(timeElapsed + hundreds + " " + tens + " " + ones);
+                timerHundreds.setImage(TIMER_IMAGE_ARRAY[hundreds]);
+                timerTens.setImage(TIMER_IMAGE_ARRAY[tens]);
+                timerOnes.setImage(TIMER_IMAGE_ARRAY[ones]);
+            }
+        }, 0, 1000);
     }
 
     private void setupMenuItems() {
@@ -370,6 +411,7 @@ public class Main extends Application {
 
             smileBTN.setGraphic(new ImageView(FACE_DEAD));
             playing = false;
+            reset();
         }
     }
 
@@ -450,6 +492,7 @@ public class Main extends Application {
         if (totalTiles - numMines == Tile.getRevealedTileCount()) {
             smileBTN.setGraphic(new ImageView(FACE_WIN));
             playing = false;
+            stopTimer();
         }
     }
 

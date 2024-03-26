@@ -57,7 +57,7 @@
     </MenuBar>
       <VBox fillWidth="false" style="-fx-background-color: c0c0c0; -fx-border-color: white c0c0c0 c0c0c0 white; -fx-border-style: solid; -fx-border-width: 3 3 3 3; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);">
         <children>
-            <VBox fillWidth="false" spacing="7.0" style="-fx-border-width: 5; -fx-border-color: c0c0c0;">
+            <VBox fillWidth="false" spacing="7.0" style="-fx-border-width: 5; -fx-border-color: c0c0c0;" VBox.vgrow="ALWAYS">
                <children>
                   <HBox fx:id="timerContainer" alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" style="-fx-border-style: solid; -fx-border-width: 2; -fx-border-color: #7f7f7f white white #7f7f7f;">
                      <children>
@@ -106,17 +106,17 @@
                            <children>
                               <HBox alignment="CENTER" fillHeight="false" maxHeight="23.0" style="-fx-border-color: #7f7f7f white white #7f7f7f; -fx-border-width: 1.5;">
                                  <children>
-                                    <ImageView fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="timerHundreds" fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../../images/t0.png" />
                                        </image>
                                     </ImageView>
-                                    <ImageView fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="timerTens" fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../../images/t0.png" />
                                        </image>
                                     </ImageView>
-                                    <ImageView fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="timerOnes" fitHeight="23.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../../images/t0.png" />
                                        </image>
