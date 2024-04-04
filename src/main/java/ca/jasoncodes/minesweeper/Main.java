@@ -154,21 +154,20 @@ public class Main extends Application {
         minefieldGPane = new GridPane();
         vBoxForMinefield.getChildren().add(minefieldGPane);
 
-        timer = new Timer();
-        setupTimer();
+
+
         reset();
     }
 
     /* Reset the game */
     private void reset() {
-
-        systemTime = System.currentTimeMillis();
-
+        stopTimer();
         firstTurn = true;
         playing = true;
         totalFlagged = 0;
         totalTiles = numRows * numCols;
         minefield = new boolean[numRows][numCols];
+        setupTimer();
         setupSmileBTN();
         setupMenuItems();
         setupTilegrid();
@@ -177,24 +176,29 @@ public class Main extends Application {
     }
 
     private void stopTimer() {
-        if (playing && !firstTurn){
+        if (timer != null){
             timer.cancel();
             timer.purge();
+            timer = null;
         }
     }
 
     // Source: https://stackoverflow.com/questions/9413656/how-to-use-timer-class-to-call-a-method-do-something-reset-timer-repeat
     private void setupTimer() {
-        final long pastSystemTime = systemTime;
+        if (timer == null) {
+            timer = new Timer();
+        }
+        final long timeAtSetup = System.currentTimeMillis();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                long timeElapsed = (System.currentTimeMillis() - pastSystemTime)/1000;
-
-                int hundreds = (int) (timeElapsed / 1000);
+                long timeElapsed = (System.currentTimeMillis() - timeAtSetup);
+                System.out.println(System.currentTimeMillis() + " " +timeAtSetup);
+                System.out.println(System.currentTimeMillis() - timeAtSetup);
+                int hundreds = (int) (timeElapsed / 100000);
                 hundreds = Math.min(hundreds, 9);
-                int tens = (int) ((timeElapsed % 100) / 10);
-                int ones = (int) ((timeElapsed % 100) % 10);
+                int tens = (int) ((timeElapsed % 100000) / 10000);
+                int ones = (int) ((timeElapsed % 10000) / 1000);
 
                 System.out.println(timeElapsed + hundreds + " " + tens + " " + ones);
                 timerHundreds.setImage(TIMER_IMAGE_ARRAY[hundreds]);
@@ -275,6 +279,8 @@ public class Main extends Application {
             for (Tile t : tRow) {
                 t.setVal();
             }
+
+
     }
 
     /* This method is responsible for randomizing bomb location */
@@ -391,8 +397,6 @@ public class Main extends Application {
     /* Player lost */
     private void gameOver(Tile tile) {
         if (!firstTurn) {
-            int row = tile.getRow();
-            int col = tile.getCol();
             for (Tile[] gridRow : tileGrid) {
                 for (Tile t : gridRow) {
                     if (t.isMine()) {
@@ -411,7 +415,7 @@ public class Main extends Application {
 
             smileBTN.setGraphic(new ImageView(FACE_DEAD));
             playing = false;
-            reset();
+            stopTimer();
         }
     }
 
@@ -491,8 +495,9 @@ public class Main extends Application {
         System.out.println(totalTiles + " - " + numMines + " = " + Tile.getRevealedTileCount());
         if (totalTiles - numMines == Tile.getRevealedTileCount()) {
             smileBTN.setGraphic(new ImageView(FACE_WIN));
-            playing = false;
             stopTimer();
+
+            playing = false;
         }
     }
 
