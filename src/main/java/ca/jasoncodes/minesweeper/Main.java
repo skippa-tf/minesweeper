@@ -322,7 +322,8 @@ public class Main extends Application {
 
     /* Converts a one dimensional array to a 2D dimensional array with the specified # of values per row */
     private boolean[][] convertTo2DArray(boolean[] arr, int numCols) {
-        boolean[][] temp = new boolean[Math.ceilDiv(arr.length, numCols)][numCols];
+
+        boolean[][] temp = new boolean[arr.length / numCols][numCols];
         for (int i = 0; i < arr.length; i++) {
             temp[i/numCols][i%numCols] = arr[i];
         }
