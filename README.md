@@ -1,3 +1,4 @@
+![java_muPnFBE3is](https://github.com/skippa-tf/minesweeper/assets/13388340/483a6d82-0f4e-4953-9381-cd348805994a)
 ## Summary
 This is a fully functioning clone of Microsoft's Minesweeper I created for my programming II class.
 There is a minor difference in appearance but I did my best to make it function / look the exact same way. To create the UI I used Gluon's Scenebuilder, and then made my Main class my controller class for the FXMLLoader.
