@@ -74,21 +74,21 @@ public class Main extends Application {
     private final int beginnerMineCount = 10;
     private final int beginnerNumRows = 8;
     private final int beginnerNumCols = 8;
-    private final int beginnerWidth = 295;
+    private final int beginnerWidth = 281;
     private final int beginnerHeight = 415;
 
     /* Intermediate */
     private final int intermediateMineCount = 40;
     private final int intermediateNumRows = 16;
     private final int intermediateNumCols = 16;
-    private final int intermediateWidth = 552;
+    private final int intermediateWidth = 538;
     private final int intermediateHeight = 672;
 
     /* Expert */
     private final int expertMineCount = 99;
     private final int expertNumRows = 16;
     private final int expertNumCols = 32;
-    private final int expertWidth = 1063;
+    private final int expertWidth = 1049;
     private final int expertHeight = 672;
 
     /* Game Vars */
